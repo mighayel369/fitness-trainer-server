@@ -4,6 +4,7 @@ import { authMiddleware } from "Presentation/middleware/authMiddleware";
 import passport from 'passport';
 import { container } from "tsyringe";
 const userController = container.resolve(UserController)
+import { upload } from "Presentation/middleware/upload";
 const router=express.Router()
 router.post('/create-user', userController.createUser);
 router.post('/send-otp',userController.sendOtp)
@@ -12,7 +13,6 @@ router.post('/login', userController.login);
 router.get('/nav',authMiddleware,userController.getUserData)
 router.post('/forgot-password',userController.forgotPassword)
 router.post('/reset-password/:token', userController.resetPassword)
-
 router.get('/auth/google',passport.authenticate('google',{
     scope:['profile','email']
 }))
@@ -36,5 +36,6 @@ router.get('/list-trainers',authMiddleware,userController.listTrainers)
 router.get("/trainer/:id",authMiddleware,userController.getTrainerById);
 router.post('/logout',userController.logot)
 
+router.post('/update-userprofilepic',authMiddleware,upload.single('image'),userController.updateProfilePicture)
 
 export default router

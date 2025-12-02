@@ -16,5 +16,10 @@ router.get('/trainers/:id',adminAuthMiddleware,adminController.findTrainerDetail
 router.get('/pending-trainers',adminController.getPendingTrainers)
 router.get('/verify-trainer/:id',adminAuthMiddleware,adminController.getSinglePendingTrainer)
 router.patch('/verify-trainer-action/:id',adminAuthMiddleware,adminController.handleTrainerVerification)
-
+router.post('/services/add',adminAuthMiddleware,adminController.addNewService)
+router.get("/services",adminController.fetchServices);
+router.patch("/services/:id",adminAuthMiddleware,adminController.updateService);
+router.get("/dashboard",adminAuthMiddleware,adminController.getDashboardData);
+router.get('/services/:id',adminAuthMiddleware,adminController.findServiceDetails)
+router.delete('/services/:id',adminAuthMiddleware,adminController.deleteService)
 export default router

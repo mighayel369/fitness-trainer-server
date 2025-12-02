@@ -13,7 +13,8 @@ export const UserMapper = {
       doc.googleId || null,
       doc.phone || null,   
       doc.address || null,   
-      doc.password || null  
+      doc.password || null , 
+      doc.profilePic || null
     );
   }
 };

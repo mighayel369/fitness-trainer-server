@@ -23,15 +23,6 @@ export class TrainerRepoImpl extends BaseRepository<IUser, TrainerEntity> implem
     return this.findOne({ email, role: "trainer" });
   }
 
-  async findAllTrainers(page = 1, search = "", limit = 5): Promise<TrainerEntity[]> {
-    const skip = (page - 1) * limit;
-    const filter = search
-      ? { role: "trainer", verified: "accepted", $or: [{ name: { $regex: search, $options: "i" } }, { email: { $regex: search, $options: "i" } }] }
-      : { role: "trainer", verified: "accepted"};
-
-    return this.findMany(filter, limit, skip);
-  }
-
   async trainerCount(search = ""): Promise<number> {
     const filter = search
       ? { role: "trainer", verified: "accepted", $or: [{ name: { $regex: search, $options: "i" } }, { email: { $regex: search, $options: "i" } }] }

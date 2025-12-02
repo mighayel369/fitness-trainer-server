@@ -1,3 +1,4 @@
 export interface IFindAllPendingTrainersUseCase<T>{
-    findPendingTrainers():Promise<T[]|null>
+      findPendingTrainers(page: number,limit: number,search?: string): Promise<{ data: T[]; totalPages: number }> 
+    
 }

@@ -32,16 +32,21 @@ export class CloudinaryService implements ICloudinaryService{
     }
 
 
-   async deleteTrainerCertificate(publicId: string): Promise<boolean> {
-            try {
-                const result = await cloudinary.uploader.destroy(publicId);
-                if (result.result === "ok" || result.result === "not found") {
-                return true; 
+
+       async getProfilePictureUrl(file: Express.Multer.File, id: string): Promise<string> {
+        try{
+            const result=await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+                {
+                    folder:"profile-pictures",
+                    public_id: `trainer-${id}`,
+                    overwrite: true
                 }
-                return false;
-            } catch (error) {
-                console.error("Failed to delete Cloudinary file:", error);
-                return false;
-            }
-   }
+            )
+            return result.secure_url;
+        }catch(error){
+               console.error("Cloudinary upload failed:", error);
+               throw new Error("Failed to upload trainer certificate");
+        }
+    }
 }

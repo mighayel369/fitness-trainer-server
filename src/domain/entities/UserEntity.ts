@@ -11,7 +11,8 @@ export class UserEntity {
     public googleId?: string | null,
     public phone?: string | null,    
     public address?: string | null, 
-    public password?: string | null
+    public password?: string | null,
+    public profilePic?:string | null
   ) {}
 }
 

@@ -22,6 +22,8 @@ export interface IUser extends Document {
   rating?: number;
   languages?: string[];
   pricing?: number;
+  timeSlot?:string[];
+  profilePic?:string;
 }
 
 const schema = new Schema<IUser>(
@@ -50,7 +52,10 @@ const schema = new Schema<IUser>(
 
     rating: { type: Number, default: 0, min: 0, max: 5 },
     languages: [{ type: String }],
-    pricing: { type: Number }
+    pricing: { type: Number },
+    timeSlot: [ { startTime: { type: String, required: true },endTime: { type: String, required: true } }
+],
+ profilePic: { type: String }
   },
   { timestamps: true }
 );

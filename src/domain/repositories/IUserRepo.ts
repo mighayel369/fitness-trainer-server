@@ -5,10 +5,11 @@ export interface IUserRepo {
     findUserByEmail(email: string): Promise<UserEntity | null>;
     updateVerification(email: string): Promise<boolean>;
     findUserById(id: string): Promise<UserEntity | null>;
-    findAllUsers(page: number, search: string): Promise<UserEntity[]>;
+     findMany(filter?: object,page?: number,limit?: number): Promise<{ data: UserEntity[]; totalCount: number }>;
     userCount(search: string): Promise<number>;
     updateUserStatus(id: string, status: boolean): Promise<void>;
     updateUserData(id: string, data: Partial<UserEntity>): Promise<UserEntity | null>;
+    update(id:string,data:Partial<UserEntity>):Promise<UserEntity|null>
 }
 
 

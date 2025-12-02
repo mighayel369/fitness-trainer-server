@@ -5,7 +5,7 @@ export interface ITrainerRepo {
     findTrainerById(id: string): Promise<TrainerEntity | null>;
     findTrainerByEmail(email: string): Promise<TrainerEntity | null>;
     findPendingTrainers(): Promise<TrainerEntity[]>;
-    findAllTrainers(page: number, search: string): Promise<TrainerEntity[]>;
+    findMany(filter?: object,page?: number,limit?: number): Promise<{ data: TrainerEntity[]; totalCount: number }>;
     trainerCount(search: string): Promise<number>;
     findPendingTrainerDetails(id: string): Promise<TrainerEntity | null>;
     updateVerification(id: string,action:string, reason?:string): Promise<TrainerEntity | null>;

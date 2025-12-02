@@ -14,7 +14,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET) as JwtPayload & { id: string; email?: string; role?: string };
-
+    console.log(decoded)
     if (decoded.role !== 'user') {
       res.status(403).json({ message: "Not authorized as user " });
       return

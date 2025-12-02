@@ -1,5 +1,5 @@
 import { UserEntity } from "domain/entities/UserEntity";
-import { IFindAllUseCase, IPaginatedResult } from "domain/usecases/IFindAllUseCase";
+import { IFindAllUseCase } from "domain/usecases/IFindAllUseCase";
 import { inject, injectable } from "tsyringe";
 import { IUserRepo } from "domain/repositories/IUserRepo";
 
@@ -9,11 +9,12 @@ export class FindAllUsersUseCase implements IFindAllUseCase<UserEntity> {
     @inject("IUserRepo") private readonly userRepo: IUserRepo
   ) {}
 
-  async findAll(page=1, search=''): Promise<IPaginatedResult<UserEntity>> {
-    const users = await this.userRepo.findAllUsers(page, search);
-    const count = await this.userRepo.userCount(search);
-    const totalPages = Math.max(1, Math.ceil(count / 5));
+  async findAll(page: number,limit: number,search?: string): Promise<{ data: UserEntity[]; totalPages: number }> {
+    const skip = (page - 1) * limit;
+    const filter = search ? { name: { $regex: search, $options: "i" },role:'user' } : {role:'user'};
+    const { data, totalCount } = await this.userRepo.findMany(filter, limit, skip);
 
-    return { data: users, totalPages };
+    const totalPages = Math.ceil(totalCount / limit);
+    return { data: data, totalPages };
   }
 }

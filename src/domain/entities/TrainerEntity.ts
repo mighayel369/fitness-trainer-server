@@ -20,7 +20,8 @@ export class TrainerEntity {
     public languages?: string[], 
     public pricing?: number,
     public rejectReason?: string | null,
-    public timeSlots?:string[]|null
+    public timeSlot?: { startTime: string; endTime: string }[] | null,
+    public profilePic?:string | null
   ) {}
 }
 

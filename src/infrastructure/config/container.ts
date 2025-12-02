@@ -66,7 +66,7 @@ import { IVerificationUseCase } from "domain/usecases/IVerificationUseCase";
 import { TrainerVerificationUseCase } from "application/usecases/trainer/TrainerVerificationUseCase";
 
 import { IFindByIdUseCase } from "domain/usecases/IFindByIdUseCase";
-import { FindUserByIdUseCase } from "application/usecases/user/FindUserByIdUsecase";
+import { FindUserByIdUseCase } from "application/usecases/user/FindUserByIdUseCase";
 import { FindTrainerByIdUseCase } from "application/usecases/trainer/FindTrainerByIdUseCase";
 
 import { IPendingTrainersUseCase } from "domain/usecases/IPendingTrainersUseCase";
@@ -85,7 +85,7 @@ import { TrainerRegisterUseCase } from "application/usecases/auth/TrainerRegiste
 import { UserLoginUseCase } from "application/usecases/auth/UserLoginUseCase";
 import { UserRegisterUseCase } from "application/usecases/auth/UserRegisterUseCase.";
 
-import { ITrainerReapplyUseCase } from "domain/usecases/ITrainerReapplyUsecase";
+import { ITrainerReapplyUseCase } from "domain/usecases/ITrainerReapplyUseCase";
 import { TrainerReapplyUseCase } from "application/usecases/trainer/TrainerReapplyUseCase";
 
 
@@ -93,6 +93,45 @@ import { TrainerReapplyUseCase } from "application/usecases/trainer/TrainerReapp
 
 import { UserProfileUseCase } from "application/usecases/user/UserProfileUseCase";
 
+import { ICreateServiceUseCase } from "domain/usecases/ICreateServiceUseCase";
+import { CreateServiceUseCase } from "application/usecases/services/CreateServiceUseCase";
+
+import { IServiceRepo } from "domain/repositories/IServiceRepo";
+import { ServiceRepoImpl } from "infrastructure/database/repositories/ServiceRepoImpl";
+
+import { IFindTrainerSlotUseCase } from "domain/usecases/IFIndTrainerSlotUseCase";
+import { FindTrainerSlotUseCase } from "application/usecases/slot/FindTrainerSlotUseCase";
+
+import { ITrainerSlotRepo } from "domain/repositories/ITrainerSlotRepo";
+import { TrainerSlotRepoImpl } from "infrastructure/database/repositories/TrainerSotRepoImpl";
+
+import { FindServiceByIdUseCase } from "application/usecases/services/FindServiceByIdUseCase";
+
+import { IFindByIdUAndDeleteUseCase } from "domain/usecases/IFindByIdAndDeleteUseCase";
+import { DeleteServiceUseCase } from "application/usecases/services/DeleteServiceUseCase";
+
+import { UpdateServiceUseCase } from "application/usecases/services/UpdateServiceUseCase";
+
+import { FetchServicesUseCase } from "application/usecases/services/FetchSercviceUseCase";
+
+
+import { IUpdateProfilePicture } from "domain/usecases/IUpdateProfilePicture";
+import { UpdateTrainerProfilePicture } from "application/usecases/trainer/UpdateTrainerProfilePicture";
+import { UpdateUserProfilePicture } from "application/usecases/user/UpdateUserProfilePicture";
+container.register<IUpdateProfilePicture>("UpdateTrainerProfilePicture", { useClass: UpdateTrainerProfilePicture });
+container.register<IUpdateProfilePicture>("UpdateUserProfilePicture", { useClass: UpdateUserProfilePicture });
+
+
+container.register<IUpdatableProfile<any>>("UpdateServiceUseCase", { useClass: UpdateServiceUseCase });
+
+
+container.register<IFindByIdUAndDeleteUseCase>("DeleteServiceUseCase", { useClass: DeleteServiceUseCase });
+
+container.register<IFindTrainerSlotUseCase>("IFindTrainerSlotUseCase", { useClass: FindTrainerSlotUseCase });
+container.register<ITrainerSlotRepo>("ITrainerSlotRepo", { useClass: TrainerSlotRepoImpl });
+
+container.register<ICreateServiceUseCase<any>>("ICreateServiceUseCase", { useClass: CreateServiceUseCase });
+container.register<IServiceRepo>("IServiceRepo", { useClass: ServiceRepoImpl });
 
 container.register<ILoginUseCase>("AdminLoginUsecase", {
   useClass: AdminLoginUsecase,
@@ -126,6 +165,10 @@ container.register<IFindAllUseCase<any>>("FindAllUsersUseCase", {
   useClass: FindAllUsersUseCase,
 });
 
+container.register<IFindAllUseCase<any>>("FetchServiceUseCase", {
+  useClass: FetchServicesUseCase,
+});
+
 container.register<IFindAllUseCase<any>>("FindAllTrainersUseCase", {
   useClass: FindAllTrainersUseCase,
 });
@@ -144,6 +187,10 @@ container.register<IFindByIdUseCase<any>>("FindUserByIdUseCase", {
 
 container.register<IFindByIdUseCase<any>>("FindTrainerByIdUseCase", {
   useClass: FindTrainerByIdUseCase,
+});
+
+container.register<IFindByIdUseCase<any>>("FindServiceByIdUseCase", {
+  useClass: FindServiceByIdUseCase,
 });
 
 container.register<IPendingTrainersUseCase<any>>("PendingTrainersDetails", {

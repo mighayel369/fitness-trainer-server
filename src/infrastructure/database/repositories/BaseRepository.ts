@@ -29,15 +29,21 @@ export abstract class BaseRepository<TDocument extends Document,TEntity> {
     return doc ? this.toEntity(doc) : null;
   }
 
-  async findMany(
-    filter: FilterQuery<TDocument> = {},
-    limit = 10,
-    skip = 0,
-    projection?: ProjectionType<TDocument>
-  ): Promise<TEntity[]> {
-    const docs = await this.model.find(filter, projection).limit(limit).skip(skip);
-    return this.mapMany(docs);
-  }
+async findMany(
+  filter: FilterQuery<TDocument> = {},
+  limit = 5,
+  skip = 0,
+  projection?: ProjectionType<TDocument>,
+): Promise<{ data: TEntity[]; totalCount: number }> {
+  const totalCount = await this.model.countDocuments(filter);
+
+  const docs = await this.model.find(filter, projection).limit(limit).skip(skip)
+
+  return {
+    data: this.mapMany(docs),
+    totalCount,
+  };
+}
 
   async count(filter: FilterQuery<TDocument> = {}): Promise<number> {
     return this.model.countDocuments(filter);

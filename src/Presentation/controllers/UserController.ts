@@ -15,6 +15,7 @@ import { IFindByIdUseCase } from 'domain/usecases/IFindByIdUseCase';
 import { IUpdatableProfile } from 'domain/usecases/IUpdatableProfileUseCase';
 import { IFindAllUseCase } from 'domain/usecases/IFindAllUseCase';
 import { TrainerEntity } from 'domain/entities/TrainerEntity';
+import { IUpdateProfilePicture } from "domain/usecases/IUpdateProfilePicture";
 import config from 'config';
 @injectable()
 export class UserController {
@@ -30,6 +31,7 @@ export class UserController {
     @inject("UserProfileUseCase") private _updateUserData: IUpdatableProfile<UserEntity>,
     @inject("FindAllTrainersUseCase") private _findTrainers: IFindAllUseCase<TrainerEntity>,
     @inject("FindTrainerByIdUseCase") private _findTrainerDetails: IFindByIdUseCase<TrainerEntity>,
+    @inject("UpdateUserProfilePicture") private readonly _updateUserProfilePic: IUpdateProfilePicture,
   ) {}
 
   createUser = async (req: Request, res: Response) => {
@@ -166,6 +168,7 @@ export class UserController {
 
 verifyUser = async (req: Request, res: Response) => {
   try {
+    console.log('user side')
     const { id } = req.user as { id: string };
 
     if (!id) {
@@ -293,7 +296,8 @@ updateUserData=async(req:Request,res:Response)=>{
     try {
       const page = req.query.pageNO ? parseInt(req.query.pageNO as string) : 1;
       const search = req.query.search?.toString() || '';
-      const { data, totalPages } = await this._findTrainers.findAll(page, search);
+      let limit=5
+      const { data, totalPages } = await this._findTrainers.findAll(page,limit,search);
       res.status(HttpStatus.OK).json({ success: true, trainers:data, totalPages });
     } catch {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
@@ -331,4 +335,45 @@ updateUserData=async(req:Request,res:Response)=>{
       });
     }
   }
+
+  updateProfilePicture = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.user as { id: string };
+  
+      if (!id) {
+       res.status(HttpStatus.UNAUTHORIZED).json({
+          success: false,
+          message: ERROR_MESSAGES.UNAUTHORIZED,
+        });
+        return
+      }
+  
+      if (!req.file) {
+         res.status(HttpStatus.BAD_REQUEST).json({
+          success: false,
+          message: "No image file provided",
+        });
+        return
+      }
+  
+      const result = await this._updateUserProfilePic.updateProfilePic(req.file, id);
+  
+  
+      if (!result.success) {
+        res.status(HttpStatus.BAD_REQUEST).json(result);
+        return
+      }
+  
+       res.status(HttpStatus.OK).json(result);
+       return
+    } catch (error) {
+      console.error("Controller error (updateProfilePicture):", error);
+  
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+      });
+      return
+    }
+  };
 }

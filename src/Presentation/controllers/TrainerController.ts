@@ -2,14 +2,15 @@ import { inject, injectable } from "tsyringe";
 import { Request, Response } from "express";
 import { ILoginUseCase } from "domain/usecases/ILoginUseCase";
 import { IRegisterUseCase } from "domain/usecases/IRegisterUseCase";
-import { ITrainerReapplyUseCase } from "domain/usecases/ITrainerReapplyUsecase";
+import { ITrainerReapplyUseCase } from "domain/usecases/ITrainerReapplyUseCase";
 import { IFindByIdUseCase } from 'domain/usecases/IFindByIdUseCase';
 import { ERROR_MESSAGES } from "core/ErrorMessage";
 import { HttpStatus } from "core/HttpStatus";
 import { CreateParamTrainer } from "domain/entities/TrainerEntity";
 import { TrainerEntity } from "domain/entities/TrainerEntity";
 import { IUpdatableProfile } from 'domain/usecases/IUpdatableProfileUseCase';
-
+import { IFindTrainerSlotUseCase } from "domain/usecases/IFIndTrainerSlotUseCase";
+import { IUpdateProfilePicture } from "domain/usecases/IUpdateProfilePicture";
 import config from "config";
 @injectable()
 export class TrainerController {
@@ -25,7 +26,11 @@ export class TrainerController {
 
     @inject("FindTrainerByIdUseCase") private _findTrainerDetails: IFindByIdUseCase<TrainerEntity>,
     @inject("TrainerProfileUseCase") private _updateTrainerData: IUpdatableProfile<TrainerEntity>,
-  ){}
+    @inject("IFindTrainerSlotUseCase") private _findSlotUseCase: IFindTrainerSlotUseCase,
+    @inject("UpdateTrainerProfilePicture")
+    private readonly _updateTrainerProfilePic: IUpdateProfilePicture,
+     ){}
+
 
   createTrainer = async (req: Request, res: Response) => {
     try {
@@ -77,6 +82,8 @@ export class TrainerController {
       const { email, password } = req.body;
       const result = await this._trainerLoginUsecase.execute(email, password);
 
+      console.log('login trainer')
+
       if (!result.success) {
         const statusMap: Record<string, number> = {
           [ERROR_MESSAGES.TRAINER_NOT_FOUND]: HttpStatus.NOT_FOUND,
@@ -96,6 +103,8 @@ export class TrainerController {
         maxAge: config.COOKIE_MAX_AGE,
       });
 
+      console.log('access token', result)
+
        res.status(HttpStatus.OK).json({
         success: true,
         accessToken: result.accessToken,
@@ -112,8 +121,12 @@ export class TrainerController {
   };
 
 verifyTrainer = async (req: Request, res: Response) => {
+  console.log('hello')
   try {
+    console.log('verify trainer')
     const { id } = req.user as { id: string };
+    console.log('trainer id from verifuid trainer',id)
+    console.log('verify Trainer')
 
     if (!id) {
        res.status(HttpStatus.UNAUTHORIZED).json({
@@ -126,12 +139,13 @@ verifyTrainer = async (req: Request, res: Response) => {
     const trainer = await this._findTrainerDetails.find(id);
 
     if (!trainer) {
-      res.status(HttpStatus.NOT_FOUND).json({
+       res.status(HttpStatus.NOT_FOUND).json({
         success: false,
         message:ERROR_MESSAGES.TRAINER_NOT_FOUND
       });
-      return 
+      return
     }
+    console.log(trainer)
 
     res.status(HttpStatus.OK).json({
       success: true,
@@ -155,12 +169,14 @@ verifyTrainer = async (req: Request, res: Response) => {
 
   getTrainerDetails = async (req: Request, res: Response) => {
     const { id } = req.user as { id: string };
+    console.log('trainer details', id)
     if (!id) {
     res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
     return
     }
 
     const result = await this._findTrainerDetails.find(id);
+    console.log(result)
 
    res.status(HttpStatus.OK).json({ trainer: result });
    return
@@ -218,6 +234,7 @@ updateTrainer = async (req: Request, res: Response) => {
       res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
       return;
     }
+    console.log(req.body)
     const result = await this._updateTrainerData.updateData(id, req.body, req.file);
 
     if (!result.success) {
@@ -238,5 +255,76 @@ updateTrainer = async (req: Request, res: Response) => {
     });
   }
 }
+
+getTrainerSlots = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.user as { id: string };
+
+    if (!id) {
+      res.status(HttpStatus.UNAUTHORIZED).json({
+        success: false,
+        message: ERROR_MESSAGES.UNAUTHORIZED,
+      });
+      return;
+    }
+
+    const data = await this._findSlotUseCase.findSlots(id);
+    
+
+    res.status(HttpStatus.OK).json({
+      success: true,
+      weeklySlots: data, 
+    });
+  } catch (err) {
+    console.error("Error in getTrainerSlots:", err);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+    });
+  }
+};
+
+updateProfilePicture = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.user as { id: string };
+
+    if (!id) {
+     res.status(HttpStatus.UNAUTHORIZED).json({
+        success: false,
+        message: ERROR_MESSAGES.UNAUTHORIZED,
+      });
+      return
+    }
+
+    if (!req.file) {
+       res.status(HttpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "No image file provided",
+      });
+      return
+    }
+
+    const result = await this._updateTrainerProfilePic.updateProfilePic(req.file, id);
+
+
+    if (!result.success) {
+      res.status(HttpStatus.BAD_REQUEST).json(result);
+      return
+    }
+
+     res.status(HttpStatus.OK).json(result);
+     return
+  } catch (error) {
+    console.error("Controller error (updateProfilePicture):", error);
+
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+    });
+    return
+  }
+};
+
+
 
 }

@@ -16,7 +16,6 @@ export class TrainerReapplyUseCase implements ITrainerReapplyUseCase {
     if (!trainer) return { success: false, message: "Trainer not found" };
 
     if (file) {
-      await this._cloudinaryService.deleteTrainerCertificate(`trainer-${trainer.email}`);
       payload.certificate = await this._cloudinaryService.getTrainerCertificateUrl(file, trainer.email);
     }
 

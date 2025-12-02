@@ -23,9 +23,10 @@ app.use(express.json())
 app.use(bodyParser.json())
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:true}))
-app.use('/',userrouter)
+
 app.use('/admin',adminrouter)
 app.use('/trainer',trainerrouter)
+app.use('/',userrouter)
 
 
 export default app

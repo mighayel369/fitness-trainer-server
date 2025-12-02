@@ -22,7 +22,9 @@ export const TrainerMapper = {
       doc.rating || 0,
       doc.languages || [],
       doc.pricing || 0,
-      doc.rejectReason || null
+      doc.rejectReason || null,
+      doc.timeSlot || [],
+      doc.profilePic || null
     );
   }
 };
