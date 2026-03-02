@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import logger from 'core/logger';
+import logger from 'utils/logger';
 import 'infrastructure/config/container';
 import app from "./app";
 import { connectDB } from "infrastructure/config/database";

@@ -6,9 +6,7 @@ import { container } from "tsyringe";
 const userController = container.resolve(UserController)
 import { upload } from "Presentation/middleware/upload";
 const router=express.Router()
-router.post('/create-user', userController.createUser);
-router.post('/send-otp',userController.sendOtp)
-router.post('/verify-otp',userController.verifyOtp)
+router.post('/create-user', userController.RegisterUser);
 router.post('/login', userController.login);
 router.get('/nav',authMiddleware,userController.getUserData)
 router.post('/forgot-password',userController.forgotPassword)
@@ -30,12 +28,25 @@ router.get('/verify-userToken',authMiddleware,userController.verifyUser)
 
 router.get('/user-details',authMiddleware,userController.getFullUserData)
 router.patch("/update-userdata",authMiddleware,userController.updateUserData);
-router.post('/refresh-token',userController.refreshUserToken)
-router.get('/list-trainers',authMiddleware,userController.listTrainers)
+router.get('/list-trainers',userController.listTrainers)
 
-router.get("/trainer/:id",authMiddleware,userController.getTrainerById);
+router.get("/trainer/:id",userController.getTrainerById);
 router.post('/logout',userController.logot)
 
 router.post('/update-userprofilepic',authMiddleware,upload.single('image'),userController.updateProfilePicture)
 
+
+router.post('/trainer-slots',authMiddleware,userController.fetchTrainerSlot)
+router.get('/get-userwallet',authMiddleware,userController.fetchUserWallet)
+
+
+router.get('/bookings',authMiddleware,userController.fetchUserBookings)
+
+router.post("/change-password",authMiddleware,userController.changePassword);
+
+router.post('/booking/create-order',authMiddleware,userController.initiatePayment)
+router.post('/booking/verify-payment',authMiddleware,userController.verifyAndBookTrainer)
+router.get('/bookings/:id',authMiddleware,userController.fetchBookingDetails)
+router.post('/booking/reschedule',authMiddleware,userController.requestReschedule)
+router.post('/booking/cancel/:bookingId',authMiddleware,userController.cancelBooking)
 export default router
