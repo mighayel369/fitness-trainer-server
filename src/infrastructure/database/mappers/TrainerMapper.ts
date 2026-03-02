@@ -1,30 +1,34 @@
-
+import { ServiceMapper } from "./ServiceMapper";
 import { TrainerEntity } from "domain/entities/TrainerEntity";
+import { ITrainer } from "../models/TrainerModel";
+
+
 export const TrainerMapper = {
-  toEntity(doc: any): TrainerEntity {
+  toEntity(doc: ITrainer): TrainerEntity {
+    if (!doc) return null as any;
     return new TrainerEntity(
-      doc.name,
-      doc.email,
-      doc._id!.toString(),
-      doc.status,
-      doc.verified,
-      doc.role,
-      doc.gender,
-      doc.experience,
-      doc.specialization,
-      doc.certificate,
-      doc.createdAt,
-      doc.bio ||null,
-      doc.googleId || null,
-      doc.password || null,
-      doc.phone || null,
-      doc.address || null,
-      doc.rating || 0,
-      doc.languages || [],
-      doc.pricing || 0,
-      doc.rejectReason || null,
-      doc.timeSlot || [],
-      doc.profilePic || null
+      doc.trainerId,             
+      doc.name,                          
+      doc.email,                 
+      doc.role,                          
+      doc.verified as any,                  
+      doc.pricePerSession,                
+      doc.password || null,                
+      doc.languages || [],                   
+      doc.experience || 0,             
+      Array.isArray(doc.services)          
+        ? doc.services.map((s: any) => ServiceMapper.toEntity(s))
+        : [],
+      doc.certificate || null,       
+      (doc as any).gender || "other",      
+      doc.rating ?? 0,                     
+      doc.status,                         
+      doc.createdAt,                   
+      doc.bio || null,                
+      (doc as any).phone || null,           
+      (doc as any).address || null,          
+      doc.rejectReason || null,              
+      doc.profilePic || null         
     );
   }
 };

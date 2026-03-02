@@ -6,6 +6,9 @@ export class AdminEntity {
     public password?: string,
     public createdAt?: Date
   ) {}
+  public canAuthenticate(): boolean {
+    return !!(this._id && this.password);
+  }
 }
 
 export type CreateParamAdmin = {

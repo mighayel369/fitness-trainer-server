@@ -17,6 +17,10 @@ interface Env {
   CLOUDINARY_API_SECRET: string;
   CLIENT_URL:string;
   COOKIE_MAX_AGE: number;
+  ADMIN_PERCENT:number;
+  RAZORPAY_ID:string;
+  RAZORPAY_SECRET:string;
+  ADMIN_WALLET:string
 }
 
 const ensureEnv = (key: string): string => {
@@ -42,7 +46,11 @@ const getConfig = (): Env => {
     CLOUDINARY_API_KEY: ensureEnv('CLOUDINARY_API_KEY'),
     CLOUDINARY_API_SECRET: ensureEnv('CLOUDINARY_API_SECRET'),
     CLIENT_URL:ensureEnv('CLIENT_URL'),
-    COOKIE_MAX_AGE: Number(ensureEnv("COOKIE_MAX_AGE"))
+    COOKIE_MAX_AGE: Number(ensureEnv("COOKIE_MAX_AGE")),
+    ADMIN_PERCENT:Number(ensureEnv("ADMIN_PERCENT")),
+    RAZORPAY_ID:ensureEnv("RAZORPAY_KEYID"),
+    RAZORPAY_SECRET:ensureEnv("RAZORPAY_KEYSECRET"),
+    ADMIN_WALLET:ensureEnv("ADMIN_WALLET")
   };
 };
 

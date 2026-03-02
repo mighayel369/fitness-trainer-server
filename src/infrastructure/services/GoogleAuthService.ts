@@ -4,7 +4,7 @@ import config from 'config';
 import { injectable } from 'inversify';
 
 import user from '../database/models/UserModel';
-import { JwtService } from './JwtService'; 
+import { JwtService } from './jwt.service'; 
 import { IGoogleAuthService } from 'domain/services/IGoogleAuthService';
 
 @injectable()

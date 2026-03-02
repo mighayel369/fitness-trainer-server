@@ -30,108 +30,270 @@ import { CloudinaryService } from "infrastructure/services/CloudinaryService";
 
 
 
+import { ISendPasswordResetLinkUseCase } from "application/interfaces/auth/i-send-password-reset-link.usecase";
+import { SendPasswordResetLinkUseCase } from "application/usecases/auth/send-password-reset-link.usecase";
+
+import { ResetPasswordUseCase } from "application/usecases/auth/change-password-token.usecase";
 
 
-import { ISendOtpUseCase } from "domain/usecases/ISendOtpUseCase";
-import { SendOtpUseCase } from "application/usecases/auth/SendOtpUseCase";
-
-import { IRefreshAccessTokenUseCase } from "domain/usecases/IRefreshAccessTokenUseCase";
-import { RefreshAccessTokenUseCase } from "application/usecases/auth/RefreshAccessTokenUseCase";
-
-import { IResetPasswordUseCase } from "domain/usecases/IResetPasswordUseCase";
-import { ResetPasswordUseCase } from "application/usecases/user/ResetPasswordUseCase";
-
-import { ISendResetMailUseCase } from "domain/usecases/ISendResetMailUseCase";
-import { SendResetMailUseCase } from "application/usecases/user/SendResetMailUseCase";
-
-import { IVerifyOtpUseCase } from "domain/usecases/IVerifyOtpUseCase";
-import { VerifyOtpUseCase } from "application/usecases/auth/VerifyOtpUseCase";
+import { IFetchAllBookingsUseCase } from "application/interfaces/booking/i-fetch-all-bookings.usecase";
+import { FetchUserAllBookings } from "application/usecases/booking/fetch-all-user-bookings.usecase";
 
 
 
 
+import { IUpdateStatus } from "application/interfaces/common/i-update-status.usecase";
+import { UpdateTrainerStatusUseCase } from "application/usecases/trainer/update-trainer-status.usecase";
+import { UpdateUserStatusUseCase } from "application/usecases/user/update-user-status.uscase";
 
 
 
-import { IBlockUnblockUseCase } from "domain/usecases/IBlockUnblockUseCase";
-import { BlockUnblockUserCase } from "application/usecases/user/BlockUnblockUseCase";
+import { IFetchAllTrainersUseCase } from "application/interfaces/trainer/i-fetch-all-trainers.usecase";
+import { FetchAllClientTrainersUseCase } from "application/usecases/trainer/fetch-all-client-trainers.usecase";
+import { FetchAllTrainersUseCase } from "application/usecases/trainer/fetch-all-trainers.usecase";
 
-import { IFindAllUseCase } from "domain/usecases/IFindAllUseCase";
-import { FindAllTrainersUseCase } from "application/usecases/trainer/FindAllTrainersUseCase";
-import { FindAllUsersUseCase } from "application/usecases/user/FindAllUsersUseCase";
+import { IFetchTrainerDetails } from "application/interfaces/trainer/i-fetch-trainer-details.usecase";
+import { FetchTrainerDetailsForAdmin } from "application/usecases/trainer/fetch-trainer-details.admin.usecase";
+import { FetchTrainerDetailsForClient } from "application/usecases/trainer/fetch-trainer-detailes.client.usecase";
+import { FetchTrainerProfileUseCase } from "application/usecases/trainer/fetch-trainer-profile.usecase";
 
-import { IFindAllPendingTrainersUseCase } from "domain/usecases/IFindAllPendingTrainersUseCase";
+import { IHandleTrainerApproval } from "application/interfaces/trainer/i-handle-trainer-approval.usecase";
+import { HandleTrainerApproval } from "application/usecases/trainer/handle-trainer-approval.usecase";
 
-import { IVerificationUseCase } from "domain/usecases/IVerificationUseCase";
-import { TrainerVerificationUseCase } from "application/usecases/trainer/TrainerVerificationUseCase";
-
-import { IFindByIdUseCase } from "domain/usecases/IFindByIdUseCase";
-import { FindUserByIdUseCase } from "application/usecases/user/FindUserByIdUseCase";
-import { FindTrainerByIdUseCase } from "application/usecases/trainer/FindTrainerByIdUseCase";
-
-import { IPendingTrainersUseCase } from "domain/usecases/IPendingTrainersUseCase";
-
-import { IUpdatableProfile } from "domain/usecases/IUpdatableProfileUseCase";
-import { TrainerProfileUseCase } from "application/usecases/trainer/TrainerProfileUseCase";
-
-import { IRegisterUseCase } from "domain/usecases/IRegisterUseCase";
-import { ILoginUseCase } from "domain/usecases/ILoginUseCase";
-
-import { AdminLoginUsecase } from "application/usecases/auth/AdminLoginUsecase";
-
-import { TrainerLoginUseCase } from "application/usecases/auth/TrainerLoginUseCase";
-import { TrainerRegisterUseCase } from "application/usecases/auth/TrainerRegisterUseCase";
-
-import { UserLoginUseCase } from "application/usecases/auth/UserLoginUseCase";
-import { UserRegisterUseCase } from "application/usecases/auth/UserRegisterUseCase.";
-
-import { ITrainerReapplyUseCase } from "domain/usecases/ITrainerReapplyUseCase";
-import { TrainerReapplyUseCase } from "application/usecases/trainer/TrainerReapplyUseCase";
+import { IFetchAllUsersUseCase } from "application/interfaces/user/i-fetch-all-users.usecase";
+import { FetchAllUsersUseCase } from "application/usecases/user/fetch-all-users-usecase";
 
 
 
 
-import { UserProfileUseCase } from "application/usecases/user/UserProfileUseCase";
+import { IRegisterUseCase } from "application/interfaces/auth/i-register.usecase";
+import { ILoginUseCase } from "application/interfaces/auth/i-login.usecase";
 
-import { ICreateServiceUseCase } from "domain/usecases/ICreateServiceUseCase";
-import { CreateServiceUseCase } from "application/usecases/services/CreateServiceUseCase";
+import { AdminLoginUsecase } from "application/usecases/auth/admin-login.usecase";
+
+import { TrainerLoginUseCase } from "application/usecases/auth/trainer-login.usecase";
+import { TrainerRegisterUseCase } from "application/usecases/auth/trainer-register.usecase";
+
+import { UserLoginUseCase } from "application/usecases/auth/user-login.usecase";
+import { UserRegisterUseCase } from "application/usecases/auth/user-register.usecase";
+
+import { IReapplyTrainer } from "application/interfaces/trainer/i-reapply-trainer.usecase";
+import { ReapplyTrainerUseCase } from "application/usecases/trainer/trainer-reapply.usecase";
+
+import { CreateServiceUseCase } from "application/usecases/services/create-service.usecase";
 
 import { IServiceRepo } from "domain/repositories/IServiceRepo";
 import { ServiceRepoImpl } from "infrastructure/database/repositories/ServiceRepoImpl";
 
-import { IFindTrainerSlotUseCase } from "domain/usecases/IFIndTrainerSlotUseCase";
-import { FindTrainerSlotUseCase } from "application/usecases/slot/FindTrainerSlotUseCase";
 
-import { ITrainerSlotRepo } from "domain/repositories/ITrainerSlotRepo";
-import { TrainerSlotRepoImpl } from "infrastructure/database/repositories/TrainerSotRepoImpl";
+import { ISlotRepo } from "domain/repositories/ISlotRepo";
+import { SlotRepoImpl } from "infrastructure/database/repositories/SlotImpl";
 
-import { FindServiceByIdUseCase } from "application/usecases/services/FindServiceByIdUseCase";
-
-import { IFindByIdUAndDeleteUseCase } from "domain/usecases/IFindByIdAndDeleteUseCase";
-import { DeleteServiceUseCase } from "application/usecases/services/DeleteServiceUseCase";
-
-import { UpdateServiceUseCase } from "application/usecases/services/UpdateServiceUseCase";
-
-import { FetchServicesUseCase } from "application/usecases/services/FetchSercviceUseCase";
+import { FetchServiceDetailsUseCase } from "application/usecases/services/fetch-service-details.usecase";
 
 
-import { IUpdateProfilePicture } from "domain/usecases/IUpdateProfilePicture";
-import { UpdateTrainerProfilePicture } from "application/usecases/trainer/UpdateTrainerProfilePicture";
-import { UpdateUserProfilePicture } from "application/usecases/user/UpdateUserProfilePicture";
+import { IDeleteServiceUseCase } from "application/interfaces/services/i-delete.service.usecase";
+import { DeleteServiceUseCase } from "application/usecases/services/delete-service.usecase";
+
+import { IUpdateServiceUseCase } from "application/interfaces/services/i-update-service.usecase";
+import { UpdateServiceUseCase } from "application/usecases/services/update-service.usecase";
+
+import { IFetchAllServicesUseCase } from "application/interfaces/services/i-fetch-all-services.usecase";
+import { FetchServicesUseCase } from "application/usecases/services/fetch-all-services.usecase";
+
+
+import { UpdateTrainerProfilePicture } from "application/usecases/trainer/update-trainer-profile-picture.usecase";
+import { UpdateUserProfilePicture } from "application/usecases/user/update-user-profile-picture.usecase.";
+
+import { IWalletRepo } from "domain/repositories/IWalletRepo";
+import { WalletRepoImpl } from "infrastructure/database/repositories/WalletRepoImpl";
+
+import { IBookingRepo } from "domain/repositories/IBookingRepo";
+import { BookingRepoImpl } from "infrastructure/database/repositories/BookingRepoImpl";
+
+
+import { IChangePasswordUseCase } from "application/interfaces/auth/i-change-password.usecase";
+import { ChangeUserPasswordUseCase } from "application/usecases/auth/change-user-password.usecase";
+
+import { FetchAllPendingTrainers } from "application/usecases/trainer/fetch-all-pending-trainers.usecase";
+
+import { IGetTrainerSlotConfigurationUseCase } from "application/interfaces/slot/i-get-trainer-slot-configuration.usecase";
+import { GetTrainerSlotConfigurationUseCase } from "application/usecases/slot/get-trainer-slot-configuration.usecase.ts";
+
+import { IUpdateTrainerWeeklyAvailabilityUseCase } from "application/interfaces/slot/i-update-trainer-weekly-availability.usecase";
+import { UpdateTrainerWeeklyAvailabilityUseCase } from "application/usecases/slot/update-trainer-weekly-availability.usecase";
+
+import { IPaymentService } from "domain/services/IPaymentService";
+import { PaymentService } from "infrastructure/services/PaymentService";
+
+import { IFinalizeBookingUseCase } from "application/interfaces/booking/i-finalize-booking.usecase";
+import { FinalizeBookingUseCase } from "application/usecases/booking/finalize-booking.usecase";
+
+import { IInitiateOnlinePayment } from "application/interfaces/booking/i-initiate-online-payment.usecase";
+import { InitiateOnlinePaymentUseCase } from "application/usecases/booking/initiate-online-payment.usecase";
+
+import { IConfirmBookingUseCase } from "application/interfaces/booking/i-confirm-booking.usecase";
+import { ConfirmBookingUseCase } from "application/usecases/booking/confirm-client-booking-usecase";
+
+import { IDeclineBookingUseCase } from "application/interfaces/booking/i-decline-booking-request.usecase";
+import { DeclineBookingUseCase } from "application/usecases/booking/decline-booking-requests.usecase";
+
+import { IFetchBookingDetailsForClient } from "application/interfaces/booking/i-fetch-booking-details.usecase";
+import { FetchBookingDetailsForClient } from "application/usecases/booking/fetch-booking-details.user";
+
+import { IRequestBookingRescheduleUseCase } from "application/interfaces/booking/i-request-booking-reschedule.usecase";
+import { RequestBookingRescheduleUseCase } from "application/usecases/booking/reschedule-request-booking.usecase";
+
+import { IProcessTrainerRescheduleUseCase } from "application/interfaces/booking/i-process-trainer-reschedule.usecase";
+import { ProcessTrainerRescheduleUseCase } from "application/usecases/booking/process-client-reschedule-request.usecase";
+
+import { FetchTrainerAllBookings } from "application/usecases/booking/fetch-all-trainer-booking.usecase";
+import { FetchTrainerAllPendingBookings } from "application/usecases/booking/fetch-all-trainer-pending-booking.usecase";
+import { FetchTrainerAllRescheduleBookings } from "application/usecases/booking/fetch-all-trainer-reschedule-bookings.usecase";
+
+
+import { IFetchBookingDetailsForTrainer } from "application/interfaces/booking/i-fetch-booking-details.trainer";
+import { FetchBookingDetailsForTrainer } from "application/usecases/booking/fetch-booking-details.trainer";
+
+import { ICancelBooking } from "application/interfaces/booking/i-cancel-booking.usecase";
+import { CancelUserBookingUseCase } from "application/usecases/booking/user-booking-cancelation.usecase";
+
+import { IGetWalletUseCase } from "application/interfaces/wallet/IGetWalletUseCase";
+import { GetWalletUseCase } from "application/usecases/wallet/get-wallet-usecase";
+
+
+import { IJwtService } from "domain/services/i-jwt.service";
+import { JwtService } from "infrastructure/services/jwt.service";
+import { ICreateServiceUseCase } from "application/interfaces/services/i-create.service.usecase";
+import { IFetchServiceDetailsUseCase } from "application/interfaces/services/i-fetch-service-details.usecase";
+
+import { IListUnlistServiceUseCase } from "application/interfaces/services/i-list-unlist.service.usecase";
+import { ListUnlistServiceUseCase } from "application/usecases/services/list-unlist-service.usecase";
+
+import { IFetchPublicServiceUseCase } from "application/interfaces/public/i-fetch-public-services.usecase";
+import { FetchPublicServiceUseCase } from "application/usecases/public/fetch-public-services.usecase";
+
+import { RefreshAccessTokenUseCase } from "application/usecases/public/refresh-access-token.usecase";
+import { IRefreshAccessTokenUseCase } from "application/interfaces/public/i-refresh-access-token.usecase";
+
+
+import { IVerifyAccountUseCase } from "application/interfaces/public/i-verify-otp.usecase";
+import { VerifyUserAccountUseCase } from "application/usecases/public/verify-client-otp.usecase";
+import { VerifyTrainerAccountUseCase } from "application/usecases/public/verify-trainer-otp.usecase";
+
+import { IReSendOtpUseCase } from "application/interfaces/public/i-resend-otp.usecase";
+import { ReSendOtpUseCase } from "application/usecases/public/resend-otp.usecase";
+
+import { IFetchUserDetailsUseCase } from "application/interfaces/user/i-fetch-user-details.usecase";
+import { FetchUserDetailsForAdmin } from "application/usecases/user/fetch-user-details.admin.usecase";
+import { FetchUserProfileUseCase } from "application/usecases/user/fetch-user-profile.usecase"
+
+import { IUpdateUserProfileUseCase } from "application/interfaces/user/i-update-user-profile.usecase";
+import { UpdateUserProfileUseCase } from "application/usecases/user/update-user-profile.usecase";
+
+import { IUpdateProfilePicture } from "application/interfaces/common/i-update-profile-picture.usecase";
+import { IUpdateTrainerProfileUseCase } from "application/interfaces/trainer/i-update-trainer-profile.usecase";
+import { UpdateTrainerProfileUseCase } from "application/usecases/trainer/update-trainer-profile.usecase";
+
+import { IFetchTrainerAvailableSlotsUseCase } from "application/interfaces/slot/i-fetch-trainer-available-slots.usecase";
+import { FetchTrainerAvailableSlotsUseCase } from "application/usecases/slot/fetch-trainer-available-slots.usecase";
+
+import { TrainerDashboardAppointmentUsecase } from "application/usecases/dashboard/trainer-dashboard-appointments.usecase";
+import { TrainerDashboardUsecase } from "application/usecases/dashboard/trainer-dashboard.usecase";
+import { ITrainerDashBoard } from "application/interfaces/dashboard/i-trainer-dashboard.usecase";
+import { ITrainerDashBoardAppointments } from "application/interfaces/dashboard/i-trainer-dashboard-appointment.usecase";
+
+import { IAdminDashboard } from "application/interfaces/dashboard/i-admin-dashboard.usecase";
+import { AdminDashboardUsecase } from "application/usecases/dashboard/admin-dashboard.usecase";
+
+container.register<IAdminDashboard>("IAdminDashboard",{useClass:AdminDashboardUsecase})
+
+container.register<ITrainerDashBoard>("ITrainerDashBoard",{useClass:TrainerDashboardUsecase})
+container.register<ITrainerDashBoardAppointments>("ITrainerDashBoardAppointments",{useClass:TrainerDashboardAppointmentUsecase})
+
+
+container.register<IUpdateUserProfileUseCase>("IUpdateUserProfileUseCase",{useClass:UpdateUserProfileUseCase})
+
+
+container.register<IFetchUserDetailsUseCase<any>>("FetchUserDetailsForAdmin",{useClass:FetchUserDetailsForAdmin})
+container.register<IFetchUserDetailsUseCase<any>>("FetchUserProfileUseCase",{useClass:FetchUserProfileUseCase})
+
+
+container.register<IReSendOtpUseCase>("IReSendOtpUseCase",{useClass:ReSendOtpUseCase})
+container.register<IVerifyAccountUseCase>("VerifyUserAccountUseCase",{useClass:VerifyUserAccountUseCase})
+container.register<IVerifyAccountUseCase>("VerifyTrainerAccountUseCase",{useClass:VerifyTrainerAccountUseCase})
+
+
+container.register<IFetchPublicServiceUseCase>("IFetchPublicServiceUseCase",{useClass:FetchPublicServiceUseCase})
+
+container.register<IListUnlistServiceUseCase>("IListUnlistServiceUseCase",{useClass:ListUnlistServiceUseCase})
+container.register<IJwtService>("JwtServiceImpl",{useClass:JwtService})
+
+
+
+
+container.register<ICancelBooking>("CancelUserBookingUseCase",{useClass:CancelUserBookingUseCase})
+
+container.register<IFetchBookingDetailsForTrainer>("FindTrainerBookingDetails",{useClass:FetchBookingDetailsForTrainer})
+
+
+container.register<IFetchAllBookingsUseCase<any,any>>("FetchTrainerAllBookingUseCase",{useClass:FetchTrainerAllBookings})
+container.register<IFetchAllBookingsUseCase<any,any>>("FetchTrainerPendingBookingUseCase",{useClass:FetchTrainerAllPendingBookings})
+container.register<IFetchAllBookingsUseCase<any,any>>("FetchTrainerRescheduleRequests",{useClass:FetchTrainerAllRescheduleBookings})
+
+
+
+container.register<IProcessTrainerRescheduleUseCase>("ProcessRescheduleUseCase", { useClass:ProcessTrainerRescheduleUseCase})
+
+
+container.register<IRequestBookingRescheduleUseCase>("RequestReschedule", { useClass: RequestBookingRescheduleUseCase})
+
+
+container.register<IFetchBookingDetailsForClient>("FetchBookingDetails", { useClass: FetchBookingDetailsForClient})
+
+container.register<IConfirmBookingUseCase>("TrainerAcceptBookingUseCase", { useClass: ConfirmBookingUseCase})
+container.register<IDeclineBookingUseCase>("TrainerRejectBookingUseCase", { useClass: DeclineBookingUseCase})
+
+container.register<IInitiateOnlinePayment>("ICreateOrderUseCase", { useClass: InitiateOnlinePaymentUseCase})
+container.register<IPaymentService>("IPaymentService", { useClass: PaymentService})
+container.register<IFinalizeBookingUseCase>("IVerifyPaymentUseCase", { useClass: FinalizeBookingUseCase})
+
+
+
+container.register<IFetchTrainerAvailableSlotsUseCase>("FetchAvailableSlotUseCase", { useClass: FetchTrainerAvailableSlotsUseCase})
+
+container.register<IUpdateTrainerWeeklyAvailabilityUseCase>("UpdateTrainerWeeklyAvailabilityUseCase", { useClass: UpdateTrainerWeeklyAvailabilityUseCase})
+
+container.register<IGetTrainerSlotConfigurationUseCase>("GetTrainerSlotUseCase", { useClass: GetTrainerSlotConfigurationUseCase})
+
+container.register<IGetWalletUseCase<any>>("GetWalletUseCase", { useClass: GetWalletUseCase});
+
+container.register<IChangePasswordUseCase<any>>("ChangeUserPasswordUseCase", { useClass: ChangeUserPasswordUseCase});
+
+container.register<IFetchAllBookingsUseCase<any,any>>("FetchUserBookingUseCase", { useClass:FetchUserAllBookings});
+
+container.register<IBookingRepo>("BookingRepo", { useClass:BookingRepoImpl });
+
+container.register<IWalletRepo>("WalletRepo", { useClass:WalletRepoImpl });
+
 container.register<IUpdateProfilePicture>("UpdateTrainerProfilePicture", { useClass: UpdateTrainerProfilePicture });
 container.register<IUpdateProfilePicture>("UpdateUserProfilePicture", { useClass: UpdateUserProfilePicture });
 
 
-container.register<IUpdatableProfile<any>>("UpdateServiceUseCase", { useClass: UpdateServiceUseCase });
+container.register<IUpdateServiceUseCase>("UpdateServiceUseCase", { useClass: UpdateServiceUseCase });
 
 
-container.register<IFindByIdUAndDeleteUseCase>("DeleteServiceUseCase", { useClass: DeleteServiceUseCase });
+container.register<IDeleteServiceUseCase>("DeleteServiceUseCase", { useClass: DeleteServiceUseCase });
 
-container.register<IFindTrainerSlotUseCase>("IFindTrainerSlotUseCase", { useClass: FindTrainerSlotUseCase });
-container.register<ITrainerSlotRepo>("ITrainerSlotRepo", { useClass: TrainerSlotRepoImpl });
 
-container.register<ICreateServiceUseCase<any>>("ICreateServiceUseCase", { useClass: CreateServiceUseCase });
-container.register<IServiceRepo>("IServiceRepo", { useClass: ServiceRepoImpl });
+container.register<ISlotRepo>("ITrainerSlotRepo", { useClass: SlotRepoImpl });
+
+container.register<ICreateServiceUseCase>("ICreateServiceUseCase", { useClass: CreateServiceUseCase });
+container.register<IServiceRepo>("IServiceRepo",{useClass:ServiceRepoImpl});
+
+
+
+
 
 container.register<ILoginUseCase>("AdminLoginUsecase", {
   useClass: AdminLoginUsecase,
@@ -153,48 +315,58 @@ container.register<IRegisterUseCase<any>>("UserRegisterUseCase", {
   useClass: UserRegisterUseCase,
 });
 
-container.register<ITrainerReapplyUseCase>("TrainerReapplyUsecase", {
-  useClass: TrainerReapplyUseCase,
+container.register<IReapplyTrainer>("TrainerReapplyUsecase", {
+  useClass: ReapplyTrainerUseCase,
 });
 
-container.register<IBlockUnblockUseCase>("BlockUnblockUserCase", {
-  useClass: BlockUnblockUserCase,
+container.register<IUpdateStatus>("BlockUnblockUserUseCase", {
+  useClass: UpdateUserStatusUseCase,
 });
 
-container.register<IFindAllUseCase<any>>("FindAllUsersUseCase", {
-  useClass: FindAllUsersUseCase,
+container.register<IUpdateStatus>("BlockUnblockTrainerUseCase", {
+  useClass: UpdateTrainerStatusUseCase,
 });
 
-container.register<IFindAllUseCase<any>>("FetchServiceUseCase", {
+container.register<IFetchAllUsersUseCase>("FindAllUsersUseCase", {
+  useClass: FetchAllUsersUseCase,
+});
+
+container.register<IFetchAllServicesUseCase>("FetchServiceUseCase", {
   useClass: FetchServicesUseCase,
 });
 
-container.register<IFindAllUseCase<any>>("FindAllTrainersUseCase", {
-  useClass: FindAllTrainersUseCase,
+container.register<IFetchAllTrainersUseCase<any>>("FindAllTrainersUseCase", {
+  useClass: FetchAllTrainersUseCase,
 });
 
-container.register<IFindAllPendingTrainersUseCase<any>>("FindAllPendingTrainers", {
-  useClass: FindAllTrainersUseCase,
+container.register<IFetchAllTrainersUseCase<any>>("FindAllClientTrainersUseCase", {
+  useClass: FetchAllClientTrainersUseCase
 });
 
-container.register<IVerificationUseCase<any>>("TrainerVerificationUseCase", {
-  useClass: TrainerVerificationUseCase,
+container.register<IFetchAllTrainersUseCase<any>>("FindAllPendingTrainers", {
+  useClass: FetchAllPendingTrainers,
 });
 
-container.register<IFindByIdUseCase<any>>("FindUserByIdUseCase", {
-  useClass: FindUserByIdUseCase,
+container.register<IHandleTrainerApproval>("TrainerVerificationUseCase", {
+  useClass: HandleTrainerApproval,
 });
 
-container.register<IFindByIdUseCase<any>>("FindTrainerByIdUseCase", {
-  useClass: FindTrainerByIdUseCase,
+
+container.register<IFetchTrainerDetails<any>>("FetchTrainerDetailsForAdmin", {
+  useClass: FetchTrainerDetailsForAdmin,
 });
 
-container.register<IFindByIdUseCase<any>>("FindServiceByIdUseCase", {
-  useClass: FindServiceByIdUseCase,
+container.register<IFetchTrainerDetails<any>>("FetchTrainerDetailsForClient", {
+  useClass: FetchTrainerDetailsForClient,
 });
 
-container.register<IPendingTrainersUseCase<any>>("PendingTrainersDetails", {
-  useClass: FindTrainerByIdUseCase,
+
+container.register<IFetchTrainerDetails<any>>("FetchTrainerProfileUseCase", {
+  useClass: FetchTrainerProfileUseCase,
+});
+
+container.register<IFetchServiceDetailsUseCase>("FindServiceByIdUseCase", {
+  useClass: FetchServiceDetailsUseCase,
 });
 
 
@@ -210,14 +382,11 @@ container.register<IAdminRepo>("IAdminRepo", { useClass: AdminRepoImpl });
 container.register<ITrainerRepo>("ITrainerRepo", { useClass: TrainerRepoImpl });
 container.register<ICloudinaryService>("ICloudinaryService", { useClass: CloudinaryService });
 
-container.register<ISendOtpUseCase>("ISendOtpUseCase", { useClass: SendOtpUseCase })
-container.register<IVerifyOtpUseCase>("IVerifyOtpUseCase", { useClass: VerifyOtpUseCase })
-container.register<ISendResetMailUseCase>("ISendResetMailUseCase", { useClass: SendResetMailUseCase })
+container.register<ISendPasswordResetLinkUseCase>("ISendResetMailUseCase", { useClass: SendPasswordResetLinkUseCase })
 container.register<IRefreshAccessTokenUseCase>("IRefreshAccessTokenUseCase", { useClass: RefreshAccessTokenUseCase })
 
-container.register<IResetPasswordUseCase>("IResetPasswordUseCase", { useClass: ResetPasswordUseCase });
+container.register<IChangePasswordUseCase<any>>("IResetPasswordUseCase", { useClass: ResetPasswordUseCase });
 
 
-container.register<IUpdatableProfile<any>>("TrainerProfileUseCase", { useClass: TrainerProfileUseCase })
+container.register<IUpdateTrainerProfileUseCase>("TrainerProfileUseCase", { useClass: UpdateTrainerProfileUseCase })
 
-container.register<IUpdatableProfile<any>>("UserProfileUseCase", { useClass: UserProfileUseCase });

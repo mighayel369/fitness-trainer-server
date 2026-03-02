@@ -49,4 +49,22 @@ export class CloudinaryService implements ICloudinaryService{
                throw new Error("Failed to upload trainer certificate");
         }
     }
+
+    async getServiceImageUrl(file: Express.Multer.File, serviceName: string): Promise<string> {
+  try {
+    const result = await cloudinary.uploader.upload(
+      `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+      {
+        folder: "service-images",
+        public_id: `service-${serviceName}-${Date.now()}`,
+        overwrite: true
+      }
+    );
+    return result.secure_url;
+  } catch (error) {
+    console.error("Cloudinary upload failed:", error);
+    throw new Error("Failed to upload service image");
+  }
+}
+
 }
