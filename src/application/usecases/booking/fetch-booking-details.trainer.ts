@@ -1,14 +1,14 @@
 
 import { inject, injectable } from "tsyringe";
-import { IFetchBookingDetailsForTrainer } from "application/interfaces/booking/i-fetch-booking-details.trainer";
 import { IBookingRepo } from "domain/repositories/IBookingRepo";
 import { BookingMapper } from "application/mappers/booking-mapper";
 import { AppError } from "domain/errors/AppError";
 import { TrainerBookingDetailsResponseDTO } from "application/dto/booking/fetch-booking-details.dto";
 import { ERROR_MESSAGES } from "utils/ErrorMessage";
 import { HttpStatus } from "utils/HttpStatus";
+import { IFetchBookingDetails } from "application/interfaces/booking/i-fetch-booking-details.usecase";
 @injectable()
-export class FetchBookingDetailsForTrainer implements IFetchBookingDetailsForTrainer {
+export class FetchBookingDetailsForTrainer implements IFetchBookingDetails<TrainerBookingDetailsResponseDTO> {
     constructor(
         @inject("BookingRepo") private _bookingRepo: IBookingRepo
     ) {}

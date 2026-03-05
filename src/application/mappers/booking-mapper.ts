@@ -2,14 +2,13 @@
 import { BookingEntity } from "domain/entities/BookingEntity";
 import { BookingResponseDTO,TrainserBookingResponseDTO,TrainerPendingBookingDTO,TrainerRescheduleRequestDTO } from "application/dto/booking/fetch-all-bookings.dto";
 import { TrainerBookingDetailsResponseDTO,UserBookingDetailsResponseDTO } from "application/dto/booking/fetch-booking-details.dto";
-import { OnlinePaymentOrderResponseDTO } from "application/dto/booking/online-payment.dto";
 import { randomUUID } from "crypto";
 import { BOOKING_STATUS } from "utils/Constants";
 import config from "config";
 import { razorpayPayment } from "domain/services/types/razorpayPayment.type";
-import { FinalizeBookingRequestDTO } from "application/dto/booking/finalize-booking.dto";
 import { UserEntity } from "domain/entities/UserEntity";
 import { TrainerEntity } from "domain/entities/TrainerEntity";
+import { BookSessionWithTrainerRequestDTO } from "application/dto/booking/book-trainer.dto.";
 export class BookingMapper {
     static toUserBookingsResponseDTO(entity:BookingEntity):BookingResponseDTO{
         return {
@@ -115,31 +114,22 @@ export class BookingMapper {
       rejectReason:entity.rejectReason
     };
   }
-      static toOnlineOrderResponseDTO(order:razorpayPayment):OnlinePaymentOrderResponseDTO{
-    return {
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      key: config.RAZORPAY_ID!
-    };
-    }
 
-
-    static toEntityFromPayment(data: FinalizeBookingRequestDTO): BookingEntity {
-    const totalAmount = data.bookingDetails.price;
+    static toBookingEntityFomOnlinePayment(data: BookSessionWithTrainerRequestDTO): BookingEntity {
+    const totalAmount = data.price;
     const adminPercent = config.ADMIN_PERCENT || 0.1;
     
     const adminCommission = totalAmount * adminPercent;
     const trainerEarning = totalAmount - adminCommission;
       const user={userId:data.userId} as UserEntity
-      const trainer={trainerId:data.bookingDetails.trainerId} as TrainerEntity
+      const trainer={trainerId:data.trainerId} as TrainerEntity
     return new BookingEntity(
       randomUUID(),
       user,
       trainer,
-      data.bookingDetails.service,
-      new Date(data.bookingDetails.date),
-      data.bookingDetails.time,
+      data.service,
+      new Date(data.date),
+      data.time,
       60, 
       totalAmount,
       adminCommission,

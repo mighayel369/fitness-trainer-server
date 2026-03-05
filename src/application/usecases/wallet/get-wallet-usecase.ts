@@ -6,15 +6,14 @@ import { IGetWalletUseCase } from "application/interfaces/wallet/IGetWalletUseCa
 import { AppError } from "domain/errors/AppError";
 import { HttpStatus } from "utils/HttpStatus";
 import { WalletMapper } from "application/mappers/WalletTransactionMapper";
-import { WalletTransactionInputDTO } from "application/dto/wallet/WalletTransactionsDTO";
-import { WalletDetailsDTO } from "application/dto/wallet/WalletTransactionsDTO";
+import { WalletTransactionInputDTO,WalletDetailsResponseDTO } from "application/dto/wallet/WalletTransactionsDTO";
 @injectable()
-export class GetWalletUseCase implements IGetWalletUseCase<WalletDetailsDTO> {
+export class GetWalletUseCase implements IGetWalletUseCase {
   constructor(
     @inject("WalletRepo") private readonly _walletRepo: IWalletRepo
   ) {}
 
-  async execute(payload: WalletTransactionInputDTO): Promise<PaginationOutputDTO<WalletDetailsDTO>> {
+  async execute(payload: WalletTransactionInputDTO): Promise<WalletDetailsResponseDTO> {
     const { ownerId, currentPage, limit } = payload;
 
     const result = await this._walletRepo.getWalletWithPaginatedTransactions(
@@ -26,15 +25,17 @@ export class GetWalletUseCase implements IGetWalletUseCase<WalletDetailsDTO> {
     if (!result) {
       const newWallet = await this._walletRepo.createWallet(ownerId);
       return {
-        data: [WalletMapper.toWalletDetailsDTO(newWallet)],
+        balance:0,
+        data: [],
         total: 0
       };
     }
 
-    const mappedData = WalletMapper.toWalletDetailsDTO(result.wallet);
+
 
     return {
-      data: [mappedData], 
+      balance:result.wallet.balance,
+      data: result.wallet.transactions.map(t=>WalletMapper.toTransactionDTO(t)), 
       total: Math.ceil(result.totalTransactions/limit)
     };
   }

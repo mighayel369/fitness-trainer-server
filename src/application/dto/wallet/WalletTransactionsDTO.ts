@@ -1,4 +1,4 @@
-import { PaginationInputDTO } from "../common/PaginationDto";
+import { PaginationInputDTO ,PaginationOutputDTO} from "../common/PaginationDto";
 
 export interface WalletTransactionInputDTO extends Omit<PaginationInputDTO,"filter"> {
   ownerId: string;
@@ -12,14 +12,7 @@ export interface TransactionDTO {
   createdAt: string;
 }
 
-export interface WalletHoldDTO {
-  bookingId: string;
-  amount: number;
-  status: string;
-}
 
-export interface WalletDetailsDTO {
+export interface WalletDetailsResponseDTO extends PaginationOutputDTO<TransactionDTO> {
   balance: number;
-  holds: WalletHoldDTO[];
-  transactions: TransactionDTO[];
 }

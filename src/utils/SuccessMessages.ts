@@ -59,7 +59,8 @@ export const SUCCESS_MESSAGES = {
      BOOKING_PENDING_FETCHED:'Fetched All Pending Booking Requests',
   },
   PAYMENT:{
-    PAYMENT_REQUEST_INITIATED:'Payment Got Initiated Successfully'
+    PAYMENT_REQUEST_INITIATED:'Payment Got Initiated Successfully',
+    PAYMENT_SUCCESS:'Your Payment Is Successfully Completed'
   },
   DASHBOARD:{
      DASHBOARD_DATA_FETCHED:"Dashboard Data Fetched Fuccessfully",

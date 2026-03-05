@@ -126,11 +126,9 @@ import { UpdateTrainerWeeklyAvailabilityUseCase } from "application/usecases/slo
 import { IPaymentService } from "domain/services/IPaymentService";
 import { PaymentService } from "infrastructure/services/PaymentService";
 
-import { IFinalizeBookingUseCase } from "application/interfaces/booking/i-finalize-booking.usecase";
-import { FinalizeBookingUseCase } from "application/usecases/booking/finalize-booking.usecase";
 
-import { IInitiateOnlinePayment } from "application/interfaces/booking/i-initiate-online-payment.usecase";
-import { InitiateOnlinePaymentUseCase } from "application/usecases/booking/initiate-online-payment.usecase";
+import { IInitiateOnlinePayment } from "application/interfaces/payment/i-initiate-online-payment.usecase";
+import { InitiateOnlinePaymentUseCase } from "application/usecases/payment/initiate-online-payment.usecase";
 
 import { IConfirmBookingUseCase } from "application/interfaces/booking/i-confirm-booking.usecase";
 import { ConfirmBookingUseCase } from "application/usecases/booking/confirm-client-booking-usecase";
@@ -138,8 +136,10 @@ import { ConfirmBookingUseCase } from "application/usecases/booking/confirm-clie
 import { IDeclineBookingUseCase } from "application/interfaces/booking/i-decline-booking-request.usecase";
 import { DeclineBookingUseCase } from "application/usecases/booking/decline-booking-requests.usecase";
 
-import { IFetchBookingDetailsForClient } from "application/interfaces/booking/i-fetch-booking-details.usecase";
+import { IFetchBookingDetails } from "application/interfaces/booking/i-fetch-booking-details.usecase";
 import { FetchBookingDetailsForClient } from "application/usecases/booking/fetch-booking-details.user";
+import { FetchBookingDetailsForTrainer } from "application/usecases/booking/fetch-booking-details.trainer";
+
 
 import { IRequestBookingRescheduleUseCase } from "application/interfaces/booking/i-request-booking-reschedule.usecase";
 import { RequestBookingRescheduleUseCase } from "application/usecases/booking/reschedule-request-booking.usecase";
@@ -152,8 +152,6 @@ import { FetchTrainerAllPendingBookings } from "application/usecases/booking/fet
 import { FetchTrainerAllRescheduleBookings } from "application/usecases/booking/fetch-all-trainer-reschedule-bookings.usecase";
 
 
-import { IFetchBookingDetailsForTrainer } from "application/interfaces/booking/i-fetch-booking-details.trainer";
-import { FetchBookingDetailsForTrainer } from "application/usecases/booking/fetch-booking-details.trainer";
 
 import { ICancelBooking } from "application/interfaces/booking/i-cancel-booking.usecase";
 import { CancelUserBookingUseCase } from "application/usecases/booking/user-booking-cancelation.usecase";
@@ -205,6 +203,15 @@ import { ITrainerDashBoardAppointments } from "application/interfaces/dashboard/
 
 import { IAdminDashboard } from "application/interfaces/dashboard/i-admin-dashboard.usecase";
 import { AdminDashboardUsecase } from "application/usecases/dashboard/admin-dashboard.usecase";
+import { IVeirfyOnlinePayment } from "application/interfaces/payment/i-verify-online-payment.usecase";
+import { VerifyOnlinePaymentUsecase } from "application/usecases/payment/verify-online-payment.usecase";
+import { IBookSessionWithTrainer } from "application/interfaces/booking/i-book-session-with-trainer.usecase";
+import { OnlineBookingUseCase } from "application/usecases/booking/online-booking.usecase";
+import { IVerifySession } from "application/interfaces/auth/i-verify-session.usecase";
+import { VerifySessionUseCase } from "application/usecases/auth/verify-session.usecase";
+
+container.register<IVerifySession>("IVerifySession",{useClass:VerifySessionUseCase})
+
 
 container.register<IAdminDashboard>("IAdminDashboard",{useClass:AdminDashboardUsecase})
 
@@ -230,11 +237,12 @@ container.register<IListUnlistServiceUseCase>("IListUnlistServiceUseCase",{useCl
 container.register<IJwtService>("JwtServiceImpl",{useClass:JwtService})
 
 
+container.register<IBookSessionWithTrainer>("IBookSessionWithTrainer",{useClass:OnlineBookingUseCase})
 
 
 container.register<ICancelBooking>("CancelUserBookingUseCase",{useClass:CancelUserBookingUseCase})
 
-container.register<IFetchBookingDetailsForTrainer>("FindTrainerBookingDetails",{useClass:FetchBookingDetailsForTrainer})
+container.register<IFetchBookingDetails<any>>("FindTrainerBookingDetails",{useClass:FetchBookingDetailsForTrainer})
 
 
 container.register<IFetchAllBookingsUseCase<any,any>>("FetchTrainerAllBookingUseCase",{useClass:FetchTrainerAllBookings})
@@ -249,14 +257,14 @@ container.register<IProcessTrainerRescheduleUseCase>("ProcessRescheduleUseCase",
 container.register<IRequestBookingRescheduleUseCase>("RequestReschedule", { useClass: RequestBookingRescheduleUseCase})
 
 
-container.register<IFetchBookingDetailsForClient>("FetchBookingDetails", { useClass: FetchBookingDetailsForClient})
+container.register<IFetchBookingDetails<any>>("FetchBookingDetails", { useClass: FetchBookingDetailsForClient})
 
 container.register<IConfirmBookingUseCase>("TrainerAcceptBookingUseCase", { useClass: ConfirmBookingUseCase})
 container.register<IDeclineBookingUseCase>("TrainerRejectBookingUseCase", { useClass: DeclineBookingUseCase})
 
 container.register<IInitiateOnlinePayment>("ICreateOrderUseCase", { useClass: InitiateOnlinePaymentUseCase})
 container.register<IPaymentService>("IPaymentService", { useClass: PaymentService})
-container.register<IFinalizeBookingUseCase>("IVerifyPaymentUseCase", { useClass: FinalizeBookingUseCase})
+container.register<IVeirfyOnlinePayment>("IVerifyPaymentUseCase", { useClass: VerifyOnlinePaymentUsecase})
 
 
 
@@ -266,7 +274,7 @@ container.register<IUpdateTrainerWeeklyAvailabilityUseCase>("UpdateTrainerWeekly
 
 container.register<IGetTrainerSlotConfigurationUseCase>("GetTrainerSlotUseCase", { useClass: GetTrainerSlotConfigurationUseCase})
 
-container.register<IGetWalletUseCase<any>>("GetWalletUseCase", { useClass: GetWalletUseCase});
+container.register<IGetWalletUseCase>("GetWalletUseCase", { useClass: GetWalletUseCase});
 
 container.register<IChangePasswordUseCase<any>>("ChangeUserPasswordUseCase", { useClass: ChangeUserPasswordUseCase});
 

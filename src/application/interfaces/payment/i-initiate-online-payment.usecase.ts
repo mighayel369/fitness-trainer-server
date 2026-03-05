@@ -1,4 +1,4 @@
-import { CreateOnlinePaymentRequestDTO,OnlinePaymentOrderResponseDTO } from "application/dto/booking/online-payment.dto";
+import { CreateOnlinePaymentRequestDTO,OnlinePaymentOrderResponseDTO } from "application/dto/payment/online-payment.dto";
 
 export interface IInitiateOnlinePayment{
     execute(input:CreateOnlinePaymentRequestDTO):Promise<OnlinePaymentOrderResponseDTO>

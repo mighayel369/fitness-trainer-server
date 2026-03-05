@@ -1,11 +1,11 @@
 import { inject, injectable } from "tsyringe";
 import { IBookingRepo } from "domain/repositories/IBookingRepo";
 import { IPaymentService } from "domain/services/IPaymentService";
-import { CreateOnlinePaymentRequestDTO, OnlinePaymentOrderResponseDTO } from "application/dto/booking/online-payment.dto";
+import { CreateOnlinePaymentRequestDTO, OnlinePaymentOrderResponseDTO } from "application/dto/payment/online-payment.dto";
 import { AppError } from "domain/errors/AppError";
 
-import { IInitiateOnlinePayment } from "application/interfaces/booking/i-initiate-online-payment.usecase";
-import { BookingMapper } from "application/mappers/booking-mapper";
+import { IInitiateOnlinePayment } from "application/interfaces/payment/i-initiate-online-payment.usecase";
+import { PaymentMapper } from "application/mappers/payment-mapper";
 import { ERROR_MESSAGES } from "utils/ErrorMessage";
 import { HttpStatus } from "utils/HttpStatus";
 @injectable()
@@ -32,6 +32,6 @@ export class InitiateOnlinePaymentUseCase implements IInitiateOnlinePayment{
     if(!order){
       throw new AppError(ERROR_MESSAGES.ORDER_CREATION_FAILED,HttpStatus.BAD_REQUEST)
     }
-   return BookingMapper.toOnlineOrderResponseDTO(order)
+   return PaymentMapper.toOnlineOrderResponseDTO(order)
   }
 }

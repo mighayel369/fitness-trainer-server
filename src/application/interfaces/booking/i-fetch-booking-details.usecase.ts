@@ -1,5 +1,5 @@
-import { UserBookingDetailsResponseDTO } from "application/dto/booking/fetch-booking-details.dto"
 
-export interface IFetchBookingDetailsForClient{
-    execute(bookingId:string):Promise<UserBookingDetailsResponseDTO>
+
+export interface IFetchBookingDetails<bookingResponseDTO>{
+    execute(bookingId:string):Promise<bookingResponseDTO>
 }

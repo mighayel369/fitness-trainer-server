@@ -1,5 +1,5 @@
-import {WalletTransactionInputDTO } from "application/dto/wallet/WalletTransactionsDTO"
-import { PaginationOutputDTO } from "application/dto/common/PaginationDto"
-export interface IGetWalletUseCase<responseDTO>{
-    execute( payload:WalletTransactionInputDTO):Promise<PaginationOutputDTO<responseDTO>>
+import {WalletTransactionInputDTO,WalletDetailsResponseDTO } from "application/dto/wallet/WalletTransactionsDTO"
+
+export interface IGetWalletUseCase{
+    execute( payload:WalletTransactionInputDTO):Promise<WalletDetailsResponseDTO>
 }
