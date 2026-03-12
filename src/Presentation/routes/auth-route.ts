@@ -34,7 +34,13 @@ router.post(
 router.get(
     '/verify-user', 
     authorizeRoles(UserRole.USER), 
-    authController.verifySession
+    authController.verifyClientSession
+);
+
+router.get(
+    '/verify-trainer', 
+    authorizeRoles(UserRole.TRAINER), 
+    authController.verifyTrainerSession
 );
 
 

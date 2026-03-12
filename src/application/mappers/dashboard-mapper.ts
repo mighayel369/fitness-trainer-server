@@ -17,7 +17,7 @@ export class DashboardMapper {
       clientName: booking.user.name,
       detail: booking.rescheduleRequest 
         ? `Requested: ${booking.rescheduleRequest.newTimeSlot}` 
-        : `${booking.service} session`,
+        : `${booking.program} session`,
       time: "Recently" 
     };
   }
@@ -34,7 +34,7 @@ static toTrainerMonthlyPerformanceDTO(data:{month:string,sessionCount:number}): 
       bookingId:booking.bookingId,
       clientName: booking.user.name,
       timeSlot: booking.timeSlot,
-      service: booking.service,
+      program: booking.program,
       status: booking.status,
       profilePic: booking.user.profilePic || ""
     };

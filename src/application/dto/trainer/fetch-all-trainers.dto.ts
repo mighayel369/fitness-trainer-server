@@ -16,13 +16,13 @@ export interface ClientTrainersResponseDTO extends TrainersResponseDTO{
   rating: number;
   experience: number;
   address: string | null;
-  serviceName: string; 
+  programs: string; 
 }
 
 export type FetchAllClientTrainersResponseDTO = PaginationOutputDTO<ClientTrainersResponseDTO>;
 
 export interface PendingTrainerResponseDTO extends Omit<TrainersResponseDTO,'status' | 'email'>{
-  services:string[];
+  programs:string[];
   gender:string
 }
 

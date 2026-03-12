@@ -9,6 +9,8 @@ import { IAdminDashboard } from 'application/interfaces/dashboard/i-admin-dashbo
 import { TrainerDashboardAppointmentResponseDTO, TrainerDashboardResponseDTO } from "application/dto/dashboard/trainer-dashboard.dto";
 import { ITrainerDashBoard } from "application/interfaces/dashboard/i-trainer-dashboard.usecase";
 import { ITrainerDashBoardAppointments } from "application/interfaces/dashboard/i-trainer-dashboard-appointment.usecase";
+
+@injectable()
 export class DashboardController{
     constructor(
      @inject("IAdminDashboard") private _getAdmindashboard:IAdminDashboard,
@@ -16,36 +18,36 @@ export class DashboardController{
    @inject("ITrainerDashBoardAppointments") private _getTrainerAppointmentDashboardData:ITrainerDashBoardAppointments,
     ){}
 
- fetchAdminDashboardData=async(req:Request,res:Response,next:NextFunction)=>{
+ getAdminPlatformInsights=async(req:Request,res:Response,next:NextFunction)=>{
     try{
       let data =await this._getAdmindashboard.execute()
       console.log(data)
       res.status(HttpStatus.OK).json({
         success:true,
         message:SUCCESS_MESSAGES.DASHBOARD.DASHBOARD_DATA_FETCHED,
-        data
+        dashboardData:data
       })
     }catch(err){
       next(err)
     }
   }
 
-  getTrainerDashboardData = async (req: Request, res: Response, next: NextFunction) => {
+ getTrainerPerformanceMetrics = async (req: Request, res: Response, next: NextFunction) => {
       const { id: trainerId } = req.user as any;
       if (!trainerId) {
           throw new AppError(ERROR_MESSAGES.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
       }
   
       const result:TrainerDashboardResponseDTO = await this._getTrainerDashboardData.execute(trainerId);
-  
+      console.log(result)
       res.status(HttpStatus.OK).json({
           success: true,
           message: SUCCESS_MESSAGES.DASHBOARD.DASHBOARD_DATA_FETCHED,
-          result
+          dashboardData:result
       });
   };
   
-  getTrainerDashboardAppointmentData = async (req: Request, res: Response, next: NextFunction) => {
+  getTrainerDailyAgenda = async (req: Request, res: Response, next: NextFunction) => {
       const { id: trainerId } = req.user as any;
       const { date } = req.query; 
   
@@ -60,7 +62,7 @@ export class DashboardController{
       res.status(HttpStatus.OK).json({
           success: true,
           message: SUCCESS_MESSAGES.DASHBOARD.TRAINER_APPOINTMENT_DATA,
-          result
+          dashboardData:result
       });
   };
 }

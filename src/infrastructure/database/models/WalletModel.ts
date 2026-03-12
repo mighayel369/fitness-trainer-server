@@ -14,7 +14,7 @@ export interface IWallet extends Document {
     type: "credit" | "debit";
     amount: number;
     source: "booking" | "refund" | "admin";
-    bookingId?: string;
+    bookingId: string;
     createdAt: Date;
   }[];
 }

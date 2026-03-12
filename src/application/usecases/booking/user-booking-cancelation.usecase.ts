@@ -8,24 +8,34 @@ import { ERROR_MESSAGES } from "utils/ErrorMessage";
 import { HttpStatus } from "utils/HttpStatus";
 import { BOOKING_STATUS } from "utils/Constants";
 @injectable()
-export class CancelUserBookingUseCase implements ICancelBooking{ 
+export class CancelUserBookingUseCase implements ICancelBooking { 
   constructor(
     @inject("BookingRepo") private _bookingRepo: IBookingRepo,
     @inject("WalletRepo") private _walletRepo: IWalletRepo
   ) {}
 
-  async execute(bookingId: string):Promise<void> {
+  async execute(bookingId: string): Promise<void> {
+
     const booking = await this._bookingRepo.findBookingById(bookingId);
 
-    if (!booking) throw new AppError(ERROR_MESSAGES.BOOKING_NOT_FOUND, HttpStatus.NOT_FOUND);
+    if (!booking) {
+      throw new AppError(ERROR_MESSAGES.BOOKING_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+
     if (!booking.canCancel()) {
       throw new AppError(ERROR_MESSAGES.CANCELLATION_TIME_OVER, HttpStatus.BAD_REQUEST);
     }
-    await this._walletRepo.releaseHoldWithoutBalance(booking.trainer.trainerId, bookingId);
+
+    const trainerId = booking.trainerId;
+    const userId = booking.userId;
+
+
+    await this._walletRepo.releaseHoldWithoutBalance(trainerId, bookingId);
     await this._walletRepo.releaseHoldWithoutBalance(config.ADMIN_WALLET, bookingId);
 
     await this._walletRepo.credit(
-      booking.user.userId, 
+      userId, 
       booking.totalAmount, 
       "refund", 
       bookingId

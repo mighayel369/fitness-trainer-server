@@ -7,7 +7,7 @@ export interface UpdateTrainerProfileDTO {
   phone: string;
   address: string;
   pricePerSession: number;
-  services: string[]; 
+  programs: string[]; 
 }
 
 export interface UpdateTrainerProfileRequestDTO{
@@ -19,7 +19,7 @@ export interface ReapplyTrainerDTO {
   name: string;
   gender: string;
   experience: number;
-  services: string[]; 
+  programs: string[]; 
   languages: string[];
   certificate: Express.Multer.File;
   pricePerSession:number

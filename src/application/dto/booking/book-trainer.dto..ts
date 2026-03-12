@@ -2,7 +2,7 @@
 export interface BookSessionWithTrainerRequestDTO {
     userId: string;
     trainerId: string;
-    service: string;
+    program: string;
     date: string;
     time: string;
     price: number;

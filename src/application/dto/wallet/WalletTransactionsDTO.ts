@@ -15,4 +15,5 @@ export interface TransactionDTO {
 
 export interface WalletDetailsResponseDTO extends PaginationOutputDTO<TransactionDTO> {
   balance: number;
+  activeHoldCount:number
 }

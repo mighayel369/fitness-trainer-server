@@ -34,25 +34,22 @@ const newTrainer = new TrainerEntity(
   input.email,            
   UserRole.TRAINER,           
   STATUS.PENDING,            
-  Number(input.pricePerSession), 
+  input.pricePerSession, 
   hashedPassword,             
   input.languages,   
-  Number(input.experience),    
-  input.services as any,        
+  input.experience,    
+  input.programs,        
   certificateUrl || null,       
   input.gender,                 
 );
 
-   const trainer=await this._trainerRepo.RegisterTrainer(newTrainer);
-if (!trainer || !trainer.trainerId) {
-      throw new AppError("Failed to persist trainer data", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+   await this._trainerRepo.RegisterTrainer(newTrainer);
     try {
-      await this.initializeTrainerAccount(trainer.trainerId, trainer.email);
-      return { email: trainer.email };
+      await this.initializeTrainerAccount(newTrainer.trainerId, newTrainer.email);
+      return { email: newTrainer.email };
     } catch (error) {
       console.log(error)
-      await this._trainerRepo.deleteTrainer(trainer.trainerId);
+      await this._trainerRepo.deleteTrainer(newTrainer.trainerId);
       throw error instanceof AppError ? error : new AppError(ERROR_MESSAGES.ACCOUNT_SETUP_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

@@ -11,26 +11,11 @@ export class RequestBookingRescheduleUseCase implements IRequestBookingReschedul
     @inject("BookingRepo") private readonly _bookingRepo: IBookingRepo
   ) {}
 
-  async execute(data: RescheduleRequestDTO): Promise<void> {
-    const { bookingId, newDate, newTimeSlot } = data;
+async execute(data: RescheduleRequestDTO): Promise<void> {
+    const booking = await this._bookingRepo.findBookingById(data.bookingId);
+    if (!booking) throw new AppError(ERROR_MESSAGES.BOOKING_NOT_FOUND, 404);
 
-    const booking = await this._bookingRepo.findBookingById(bookingId);
-    
-    if (!booking) {
-      throw new AppError(ERROR_MESSAGES.BOOKING_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    if (!booking.canReschedule()) {
-      throw new AppError(
-        ERROR_MESSAGES.RESCHEDULE_FAILED(booking.status), 
-        HttpStatus.BAD_REQUEST
-      );
-    }
-
-    await this._bookingRepo.rescheduleBooking(bookingId, {
-      newDate,
-      newTimeSlot,
-    });
-
-  }
+    booking.requestReschedule(data.newDate, data.newTimeSlot);
+    await this._bookingRepo.updateBooking(data.bookingId, booking);
+}
 }

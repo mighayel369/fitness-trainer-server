@@ -80,26 +80,26 @@ import { UserRegisterUseCase } from "application/usecases/auth/user-register.use
 import { IReapplyTrainer } from "application/interfaces/trainer/i-reapply-trainer.usecase";
 import { ReapplyTrainerUseCase } from "application/usecases/trainer/trainer-reapply.usecase";
 
-import { CreateServiceUseCase } from "application/usecases/services/create-service.usecase";
+import { OnboardNewProgram } from "application/usecases/program/onboard-new-program";
 
-import { IServiceRepo } from "domain/repositories/IServiceRepo";
-import { ServiceRepoImpl } from "infrastructure/database/repositories/ServiceRepoImpl";
+import { IProgramRepo } from "domain/repositories/IProgramRepo";
+import { ProgramRepoImpl} from "infrastructure/database/repositories/ProgramRepoImpl";
 
 
 import { ISlotRepo } from "domain/repositories/ISlotRepo";
 import { SlotRepoImpl } from "infrastructure/database/repositories/SlotImpl";
 
-import { FetchServiceDetailsUseCase } from "application/usecases/services/fetch-service-details.usecase";
+import { FetchProgramDetails } from "application/usecases/program/fetch-program-details";
 
 
-import { IDeleteServiceUseCase } from "application/interfaces/services/i-delete.service.usecase";
-import { DeleteServiceUseCase } from "application/usecases/services/delete-service.usecase";
+import { IArchiveProgram } from "application/interfaces/program/i-archive-program";
+import { ArchiveProgram } from "application/usecases/program/archived-program";
 
-import { IUpdateServiceUseCase } from "application/interfaces/services/i-update-service.usecase";
-import { UpdateServiceUseCase } from "application/usecases/services/update-service.usecase";
+import { IModifyProgramSpecs } from "application/interfaces/program/i-modify-program-specs";
+import { ModifyProgramSpecs } from "application/usecases/program/modify-program-specs";
 
-import { IFetchAllServicesUseCase } from "application/interfaces/services/i-fetch-all-services.usecase";
-import { FetchServicesUseCase } from "application/usecases/services/fetch-all-services.usecase";
+import { IFetchProgramInventory } from "application/interfaces/program/i-fetch-program-summary";
+import { FetchProgramInventory } from "application/usecases/program/fetch-programs-inventory";
 
 
 import { UpdateTrainerProfilePicture } from "application/usecases/trainer/update-trainer-profile-picture.usecase";
@@ -145,7 +145,8 @@ import { IRequestBookingRescheduleUseCase } from "application/interfaces/booking
 import { RequestBookingRescheduleUseCase } from "application/usecases/booking/reschedule-request-booking.usecase";
 
 import { IProcessTrainerRescheduleUseCase } from "application/interfaces/booking/i-process-trainer-reschedule.usecase";
-import { ProcessTrainerRescheduleUseCase } from "application/usecases/booking/process-client-reschedule-request.usecase";
+import { AcceptRescheduleBookingRequest } from "application/usecases/booking/accept-reschedule-booking-request";
+import { DeclineRescheduleBookingRequest } from "application/usecases/booking/decline-reschedule-booking-request";
 
 import { FetchTrainerAllBookings } from "application/usecases/booking/fetch-all-trainer-booking.usecase";
 import { FetchTrainerAllPendingBookings } from "application/usecases/booking/fetch-all-trainer-pending-booking.usecase";
@@ -162,14 +163,14 @@ import { GetWalletUseCase } from "application/usecases/wallet/get-wallet-usecase
 
 import { IJwtService } from "domain/services/i-jwt.service";
 import { JwtService } from "infrastructure/services/jwt.service";
-import { ICreateServiceUseCase } from "application/interfaces/services/i-create.service.usecase";
-import { IFetchServiceDetailsUseCase } from "application/interfaces/services/i-fetch-service-details.usecase";
+import { IOnboardNewProgram } from "application/interfaces/program/i-onboard-new-program";
+import { IFetchProgramDetails } from "application/interfaces/program/i-program-details";
 
-import { IListUnlistServiceUseCase } from "application/interfaces/services/i-list-unlist.service.usecase";
-import { ListUnlistServiceUseCase } from "application/usecases/services/list-unlist-service.usecase";
+import { IToggleProgramVisibility } from "application/interfaces/program/i-toggle-program-visibility";
+import { ToggleProgramVisibilityUseCase } from "application/usecases/program/toggle-program-visibility";
 
-import { IFetchPublicServiceUseCase } from "application/interfaces/public/i-fetch-public-services.usecase";
-import { FetchPublicServiceUseCase } from "application/usecases/public/fetch-public-services.usecase";
+import { IExplorePrograms } from "application/interfaces/program/i-explore-programs";
+import { ExplorePrograms } from "application/usecases/program/explore-programs";
 
 import { RefreshAccessTokenUseCase } from "application/usecases/public/refresh-access-token.usecase";
 import { IRefreshAccessTokenUseCase } from "application/interfaces/public/i-refresh-access-token.usecase";
@@ -208,9 +209,11 @@ import { VerifyOnlinePaymentUsecase } from "application/usecases/payment/verify-
 import { IBookSessionWithTrainer } from "application/interfaces/booking/i-book-session-with-trainer.usecase";
 import { OnlineBookingUseCase } from "application/usecases/booking/online-booking.usecase";
 import { IVerifySession } from "application/interfaces/auth/i-verify-session.usecase";
-import { VerifySessionUseCase } from "application/usecases/auth/verify-session.usecase";
+import { VerifyClientSession } from "application/usecases/auth/verify-session.usecase";
+import { VerifyTrainerSession } from "application/usecases/auth/verify-trainer-session";
 
-container.register<IVerifySession>("IVerifySession",{useClass:VerifySessionUseCase})
+container.register<IVerifySession<any>>("VerifyClientSession",{useClass:VerifyClientSession})
+container.register<IVerifySession<any>>("VerifyTrainerSession",{useClass:VerifyTrainerSession})
 
 
 container.register<IAdminDashboard>("IAdminDashboard",{useClass:AdminDashboardUsecase})
@@ -231,9 +234,12 @@ container.register<IVerifyAccountUseCase>("VerifyUserAccountUseCase",{useClass:V
 container.register<IVerifyAccountUseCase>("VerifyTrainerAccountUseCase",{useClass:VerifyTrainerAccountUseCase})
 
 
-container.register<IFetchPublicServiceUseCase>("IFetchPublicServiceUseCase",{useClass:FetchPublicServiceUseCase})
+container.register<IFetchProgramInventory>("IFetchProgramInventory",{useClass:FetchProgramInventory})
 
-container.register<IListUnlistServiceUseCase>("IListUnlistServiceUseCase",{useClass:ListUnlistServiceUseCase})
+container.register<IExplorePrograms>("IExplorePrograms",{useClass:ExplorePrograms})
+
+
+container.register<IToggleProgramVisibility>("IToggleProgramVisibility",{useClass:ToggleProgramVisibilityUseCase})
 container.register<IJwtService>("JwtServiceImpl",{useClass:JwtService})
 
 
@@ -251,7 +257,8 @@ container.register<IFetchAllBookingsUseCase<any,any>>("FetchTrainerRescheduleReq
 
 
 
-container.register<IProcessTrainerRescheduleUseCase>("ProcessRescheduleUseCase", { useClass:ProcessTrainerRescheduleUseCase})
+container.register<IProcessTrainerRescheduleUseCase>("AcceptRescheduleBookingRequest", { useClass:AcceptRescheduleBookingRequest})
+container.register<IProcessTrainerRescheduleUseCase>("DeclineRescheduleBookingRequest", { useClass:DeclineRescheduleBookingRequest})
 
 
 container.register<IRequestBookingRescheduleUseCase>("RequestReschedule", { useClass: RequestBookingRescheduleUseCase})
@@ -288,16 +295,16 @@ container.register<IUpdateProfilePicture>("UpdateTrainerProfilePicture", { useCl
 container.register<IUpdateProfilePicture>("UpdateUserProfilePicture", { useClass: UpdateUserProfilePicture });
 
 
-container.register<IUpdateServiceUseCase>("UpdateServiceUseCase", { useClass: UpdateServiceUseCase });
+container.register<IModifyProgramSpecs>("IModifyProgramSpecs", { useClass: ModifyProgramSpecs });
 
 
-container.register<IDeleteServiceUseCase>("DeleteServiceUseCase", { useClass: DeleteServiceUseCase });
+container.register<IArchiveProgram>("IArchiveProgram", { useClass: ArchiveProgram });
 
 
 container.register<ISlotRepo>("ITrainerSlotRepo", { useClass: SlotRepoImpl });
 
-container.register<ICreateServiceUseCase>("ICreateServiceUseCase", { useClass: CreateServiceUseCase });
-container.register<IServiceRepo>("IServiceRepo",{useClass:ServiceRepoImpl});
+container.register<IOnboardNewProgram>("IOnboardNewProgram", { useClass: OnboardNewProgram });
+container.register<IProgramRepo>("IProgramRepo",{useClass:ProgramRepoImpl});
 
 
 
@@ -339,8 +346,8 @@ container.register<IFetchAllUsersUseCase>("FindAllUsersUseCase", {
   useClass: FetchAllUsersUseCase,
 });
 
-container.register<IFetchAllServicesUseCase>("FetchServiceUseCase", {
-  useClass: FetchServicesUseCase,
+container.register<IFetchProgramInventory>("IFetchProgramInventory", {
+  useClass: FetchProgramInventory,
 });
 
 container.register<IFetchAllTrainersUseCase<any>>("FindAllTrainersUseCase", {
@@ -373,8 +380,8 @@ container.register<IFetchTrainerDetails<any>>("FetchTrainerProfileUseCase", {
   useClass: FetchTrainerProfileUseCase,
 });
 
-container.register<IFetchServiceDetailsUseCase>("FindServiceByIdUseCase", {
-  useClass: FetchServiceDetailsUseCase,
+container.register<IFetchProgramDetails>("IFetchProgramDetails", {
+  useClass: FetchProgramDetails,
 });
 
 

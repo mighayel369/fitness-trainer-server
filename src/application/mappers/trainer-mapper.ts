@@ -30,8 +30,8 @@ export class TrainerMapper {
             rating: trainer.rating || 0,
             experience: trainer.experience || 0,
             address: trainer.address ?? "NA",
-            serviceName: trainer.services.length > 0 
-                ? trainer.services[0].name 
+            programs: trainer.programs.length > 0 
+                ? trainer.programs[0].name 
                 : "General Fitness"
         };
     }
@@ -43,7 +43,7 @@ export class TrainerMapper {
             name: trainer.name,
             pricePerSession: trainer.pricePerSession,
             gender: trainer.gender,
-            services: trainer.services.map(service => service.name)
+            programs: trainer.programs.map(program => program.name)
         };
     }
 
@@ -60,9 +60,9 @@ export class TrainerMapper {
             certificate: trainer.certificate ||"",
             joined: trainer.createdAt ? trainer.createdAt.toISOString() : new Date().toISOString(),
             gender: trainer.gender,
-            services: trainer.services.map((service) => ({
-                serviceId: (service as any).serviceId.toString(), 
-                name: service.name
+            programs: trainer.programs.map((program) => ({
+                programId: (program as any).programId.toString(), 
+                name: program.name
             })),
             role: trainer.role,
             experience: trainer.experience,

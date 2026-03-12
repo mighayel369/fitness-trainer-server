@@ -8,14 +8,34 @@ import config from "config";
 import { razorpayPayment } from "domain/services/types/razorpayPayment.type";
 import { UserEntity } from "domain/entities/UserEntity";
 import { TrainerEntity } from "domain/entities/TrainerEntity";
-import { BookSessionWithTrainerRequestDTO } from "application/dto/booking/book-trainer.dto.";
+import { BookSessionWithTrainerRequestDTO,OnlineBookingRequestDTO } from "application/dto/booking/book-trainer.dto.";
+import { VerifyOnlinePaymentRequestDTO } from "application/dto/payment/verify-online-payment.dto";
 export class BookingMapper {
+
+  static toPaymentVerificationDTO(input: OnlineBookingRequestDTO): VerifyOnlinePaymentRequestDTO {
+    return {
+      razorpay_order_id: input.razorpay_order_id,
+      razorpay_payment_id: input.razorpay_payment_id,
+      razorpay_signature: input.razorpay_signature
+    };
+  }
+
+  static toBookingDetailsDTO(input: OnlineBookingRequestDTO): BookSessionWithTrainerRequestDTO {
+    return {
+      userId: input.userId,
+      trainerId: input.trainerId,
+      program: input.program,
+      date: input.date,
+      time: input.time,
+      price: input.price
+    };
+  }
     static toUserBookingsResponseDTO(entity:BookingEntity):BookingResponseDTO{
         return {
             bookingId:entity.bookingId,
             bookedDate:entity.date.toISOString(),
             trainerName:entity.trainer.name,
-            bookedService:entity.service,
+            bookedProgram:entity.program,
             bookedTime:entity.timeSlot,
             bookingStatus:entity.status,
             sessionAmount:entity.totalAmount
@@ -26,7 +46,7 @@ export class BookingMapper {
       bookingId: entity.bookingId,
       clientName: entity.user.name,
       clientEmail: entity.user.email,
-      bookedService: entity.service,
+      bookedProgram: entity.program,
       bookedDate: entity.date.toISOString(),
       bookedTime: entity.timeSlot,
       bookingStatus: entity.status,
@@ -58,7 +78,7 @@ export class BookingMapper {
         clientPhone: entity.user.phone||'',
         clientProfilePic: entity.user.profilePic||'',
         
-        bookedService: entity.service,
+        bookedProgram: entity.program,
         bookedDate: entity.date,
         bookedTime: entity.timeSlot,
         sessionDuration: entity.duration,
@@ -78,56 +98,50 @@ export class BookingMapper {
     };
 }
 
-   static toUserBookingDetailsDTO(entity: any): UserBookingDetailsResponseDTO {
-    return {
-   
-      bookingId: entity.bookingId,
+static toUserBookingDetailsDTO(entity: BookingEntity): UserBookingDetailsResponseDTO {
+  return {
+    bookingId: entity.bookingId,
+    bookedProgram: entity.program, 
+    bookedDate: entity.date instanceof Date 
+      ? entity.date.toISOString() 
+      : entity.date,
+    bookedTime: entity.timeSlot,
+    sessionDuration: entity.duration || 60,
+    bookingStatus: entity.status,
 
-      bookedService: entity.serviceName || entity.category, 
-      bookedDate: entity.date instanceof Date 
-        ? entity.date.toISOString() 
-        : entity.date,
-      bookedTime: entity.timeSlot,
-      sessionDuration: entity.duration || 60,
-    
-      bookingStatus: entity.status,
+    trainerId: entity.trainer.trainerId,
+    trainerName: entity.trainer.name || "Professional Trainer",
+    trainerProfilePic: entity.trainer.profilePic || "",
+    trainerExperience: entity.trainer.experience || 0,
+    trainerGender: entity.trainer.gender || "Not Specified",
 
-      trainerId: entity.trainer.trainerId,
-      trainerName: entity.trainer.name || "Professional Trainer",
-      trainerProfilePic: entity.trainer.profilePic || "",
-      trainerExperience: entity.trainer.experience || 0,
-      trainerGender: entity.trainer.gender || "Not Specified",
+    totalAmount: entity.totalAmount,
+    payment: {
+      method: entity.payment?.method || "online",
+      status: entity.payment?.status || "hold",
+    },
+    rescheduleRequest: entity.rescheduleRequest 
+      ? {
+          newDate: entity.rescheduleRequest.newDate.toISOString(),
+          newTimeSlot: entity.rescheduleRequest.newTimeSlot,
+          status: entity.status, 
+        }
+      : undefined,
+    rejectReason: entity.rejectReason
+  };
+}
 
-      totalAmount: entity.price || entity.totalAmount,
-      payment: {
-        method: entity.paymentMethod || entity.payment?.method || "Online",
-        status: entity.paymentStatus || entity.payment?.status || "pending",
-      },
-
-      rescheduleRequest: entity.reschedule 
-        ? {
-            newDate: entity.reschedule.date.toISOString(),
-            newTimeSlot: entity.reschedule.slot,
-            status: entity.reschedule.status,
-          }
-        : undefined,
-      rejectReason:entity.rejectReason
-    };
-  }
-
-    static toBookingEntityFomOnlinePayment(data: BookSessionWithTrainerRequestDTO): BookingEntity {
+    static toBookingEntity(data: BookSessionWithTrainerRequestDTO): BookingEntity {
+      console.log('booking data',data)
     const totalAmount = data.price;
     const adminPercent = config.ADMIN_PERCENT || 0.1;
-    
     const adminCommission = totalAmount * adminPercent;
     const trainerEarning = totalAmount - adminCommission;
-      const user={userId:data.userId} as UserEntity
-      const trainer={trainerId:data.trainerId} as TrainerEntity
     return new BookingEntity(
       randomUUID(),
-      user,
-      trainer,
-      data.service,
+      data.userId,
+      data.trainerId,
+      data.program,
       new Date(data.date),
       data.time,
       60, 

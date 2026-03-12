@@ -98,6 +98,7 @@ export class TrainerController {
     if (!id) {
       throw new AppError("Unauthorized access", HttpStatus.UNAUTHORIZED);
     }
+    console.log(req.body)
     const parseArray = (key: string) => {
       const val = req.body[`${key}[]`] || req.body[key];
       return Array.isArray(val) ? val : val ? [val] : [];
@@ -112,7 +113,7 @@ export class TrainerController {
       experience: Number(experience),
       pricePerSession: Number(pricePerSession),
       languages: parseArray('languages'),
-      services: parseArray('services'),
+      programs: parseArray('programs'),
     };
     let input:UpdateTrainerProfileRequestDTO={
       trainerId:id,
@@ -144,7 +145,7 @@ export class TrainerController {
     try {
       const filters: TrainerFilter = {
         gender: req.query.gender as any,
-        serviceId: req.query.services as string,
+        programId: req.query.programs as string,
         sort: req.query.sort as any
       };
       const result = await this._getPublicList.execute({

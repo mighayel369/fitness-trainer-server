@@ -13,9 +13,9 @@ export interface TrainerRegisterRequestDTO {
   email: string;
   password: string;
   gender: string;
-  experience: string
-  pricePerSession: string
-  services: string[];
+  experience: number
+  pricePerSession: number
+  programs: string[];
   languages: string[];
   certificateUrl?:string
   role?:string,

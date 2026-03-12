@@ -49,19 +49,29 @@ router.get('/trainer/pending',
     bookingController.getPendingSessionRequests 
 );
 
-router.patch('/:bookingId/accept', 
+router.get('/trainer/reschedule-requests', 
+    authorizeRoles(UserRole.TRAINER), 
+    bookingController.getRescheduleRequests
+);
+
+router.patch('/pending/accept', 
     authorizeRoles(UserRole.TRAINER), 
     bookingController.acceptBookingRequest
 );
 
-router.patch('/:bookingId/reject', 
+router.patch('/pending/reject', 
     authorizeRoles(UserRole.TRAINER), 
     bookingController.rejectBookingRequest
 );
 
-router.post('/reschedule/process', 
+router.patch('/reschedule/approve', 
     authorizeRoles(UserRole.TRAINER), 
-    bookingController.handleRescheduleRequest
+    bookingController.acceptReschedule
+);
+
+router.patch('/reschedule/reject', 
+    authorizeRoles(UserRole.TRAINER), 
+    bookingController.declineReschedule
 );
 
 export default router;

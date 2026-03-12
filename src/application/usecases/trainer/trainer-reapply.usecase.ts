@@ -7,7 +7,7 @@ import { AppError } from "domain/errors/AppError";
 import { HttpStatus } from "utils/HttpStatus";
 import { IReapplyTrainer } from "application/interfaces/trainer/i-reapply-trainer.usecase";
 import { ReapplyTrainerRequestDTO } from "application/dto/trainer/update-trainer-profile.dto";
-import { ServiceEntity } from "domain/entities/ServiceEntity";
+import { ProgramEntity } from "domain/entities/ProgramEntity";
 @injectable()
 export class ReapplyTrainerUseCase implements IReapplyTrainer {
   constructor(
@@ -30,9 +30,9 @@ export class ReapplyTrainerUseCase implements IReapplyTrainer {
         existing.email
       );
     }
-   const mappedServices: ServiceEntity[] = data.services 
-      ? data.services.map(id => ({ serviceId: id } as ServiceEntity))
-      : existing.services;
+   const mappedPrograms: ProgramEntity[] = data.programs 
+      ? data.programs.map(id => ({ programId: id } as ProgramEntity))
+      : existing.programs;
       const updatedEntity = new TrainerEntity(
       trainerId,
       data.name || existing.name,
@@ -43,7 +43,7 @@ export class ReapplyTrainerUseCase implements IReapplyTrainer {
       existing.password,
       data.languages ?? existing.languages,
       data.experience ?? existing.experience,
-      mappedServices, 
+      mappedPrograms, 
       existing.certificate,
       data.gender ?? existing.gender,
       existing.rating,

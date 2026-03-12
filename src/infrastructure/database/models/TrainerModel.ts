@@ -10,7 +10,7 @@ export interface ITrainer extends Document {
   verified: "pending" | "accepted" | "rejected";
   pricePerSession: number;
   experience?: number;
-  services: string[]; 
+  programs: string[]; 
   certificate?: string;
   bio?: string;
   rating: number;
@@ -40,9 +40,9 @@ const TrainerSchema = new Schema<ITrainer>(
     },
     pricePerSession: { type: Number, required: true },
     experience: { type: Number },
-    services: [{
+    programs: [{
     type: String, 
-    ref: 'Service'
+    ref: 'Program'
 }],
     certificate: { type: String },
     bio: { type: String },

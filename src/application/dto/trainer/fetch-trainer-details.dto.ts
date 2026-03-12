@@ -10,7 +10,7 @@ export interface TrainerDetailsResponseDTO {
     certificate: string;
     joined: string;
     gender: string;
-    services: { serviceId: string; name: string }[];
+    programs: { programId: string; name: string }[];
     role: string;
     experience: number;
     languages:string[];

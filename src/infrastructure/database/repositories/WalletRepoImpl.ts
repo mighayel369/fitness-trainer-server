@@ -111,6 +111,7 @@ export class WalletRepoImpl
     if (!result || result.length === 0) return null;
 
     const data = result[0];
+    console.log(data)
     return {
       wallet: this.toEntity(data),
       totalTransactions: data.totalTransactions

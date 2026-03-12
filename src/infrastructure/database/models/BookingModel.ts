@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
-
+import { BOOKING_STATUS } from "utils/Constants";
 export interface IBooking extends Document {
   bookingId:string
   user: string;
   trainer: string;
-  service: string;
+  program: string;
 
   date: Date;
   timeSlot: string;
@@ -14,7 +14,7 @@ export interface IBooking extends Document {
   adminCommission: number;
   trainerEarning: number;
 
-  status: "pending" | "confirmed" | "completed" | "cancelled" | "reschedule_requested";
+  status: BOOKING_STATUS
 
   payment: {
     method: "wallet" | "online";
@@ -36,7 +36,7 @@ const BookingSchema = new Schema<IBooking>({
    bookingId: { type: String, required: true, trim: true,unique: true },
   user: { type: String, ref: "User", required: true },
   trainer: { type: String, ref: "Trainer", required: true },
-  service: { type: String, required: true },
+  program: { type: String, required: true },
 
   date: Date,
   timeSlot: String,
@@ -46,11 +46,11 @@ const BookingSchema = new Schema<IBooking>({
   adminCommission: Number,
   trainerEarning: Number,
 
-  status: {
-    type: String,
-    enum: ["pending", "confirmed", "completed", "cancelled","reschedule_requested","rejected"],
-    default: "pending"
-  },
+status: {
+  type: String,
+  enum: Object.values(BOOKING_STATUS),
+  default: BOOKING_STATUS.PENDING      
+},
 
   payment: {
     method: String,

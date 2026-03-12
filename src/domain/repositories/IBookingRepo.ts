@@ -2,12 +2,12 @@
 import { BookingEntity} from "domain/entities/BookingEntity";
 
 export interface IBookingRepo {
-  createBooking(payload:BookingEntity): Promise<void>;
+  createBooking(payload:BookingEntity): Promise<BookingEntity|null>;
   findBookingById(id: string): Promise<BookingEntity | null>;
   updateBooking(bookingId: string, data: BookingEntity): Promise<void>;
   findBookings(searchQuery:string,filter?: object, page?: number, limit?: number): Promise<{ data: BookingEntity[]; totalCount: number }>;
   findBookedSlots(trainerId: string, date: Date): Promise<string[]>;
-  hasActiveBookingsForService(serviceId: string): Promise<boolean>;
+  hasActiveBookingsForProgram(programId: string): Promise<boolean>;
   checkAvailability(trainerId: string, date: Date, time: string): Promise<boolean>
   updateBookingStatus(bookingId: string, status: "pending" | "confirmed" | "rejected" | "cancelled"): Promise<void>;
   rescheduleBooking(bookingId: string, data: {newDate:Date,newTimeSlot:string}): Promise<void>

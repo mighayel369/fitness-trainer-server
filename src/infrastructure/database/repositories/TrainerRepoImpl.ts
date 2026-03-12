@@ -12,9 +12,8 @@ export class TrainerRepoImpl extends BaseRepository<ITrainer, TrainerEntity> imp
   protected model = TrainerModel;
   protected toEntity = TrainerMapper.toEntity;
 
-async RegisterTrainer(payload: TrainerEntity): Promise<TrainerEntity | null> {
-  const doc = await this.model.create({ ...payload });
-  return doc ? this.toEntity(doc) : null;
+async RegisterTrainer(payload: TrainerEntity): Promise<void> {
+  await this.model.create({ ...payload });
 }
 async updateTrainerStatus(id: string, newStatus: boolean): Promise<void> {
   await this.model.findOneAndUpdate(
@@ -33,21 +32,21 @@ async findTrainerById(id: string): Promise<TrainerEntity | null> {
     },
     {
       $lookup: {
-        from: "services",  
-        localField: "services", 
-        foreignField: "serviceId", 
-        as: "populatedServices"    
+        from: "programs",  
+        localField: "programs", 
+        foreignField: "programId", 
+        as: "populatedPrograms"    
       }
     },
     {
       $addFields: {
-        services: "$populatedServices"
+        programs: "$populatedPrograms"
       }
     },
 
     {
       $project: {
-        populatedServices: 0
+        populatedPrograms: 0
       }
     }
   ];
@@ -64,24 +63,22 @@ async findTrainerById(id: string): Promise<TrainerEntity | null> {
     return this.aggregateOne(
       {email},
     {
-      from: "services",
-      localField: "services",
-      foreignField: "serviceId",
-      as: "populatedServices"
+      from: "programs",
+      localField: "programs",
+      foreignField: "programId",
+      as: "populatedPrograms"
     }
     ) 
   }
   
 async updateTrainer(id: string, payload: TrainerEntity): Promise<void> {
   const persistenceData = {
-    ...payload,
-    services: payload.services.map(s => s.serviceId) 
+    ...payload
   };
 
    await this.model.findOneAndUpdate(
     { trainerId: id },
-    { $set: persistenceData }, 
-    { new: true }
+    { $set: persistenceData }
   );
 }
 
@@ -98,10 +95,10 @@ async updateVerificationStatus(id: string, status: "accepted" | "rejected", reas
   return this.aggregateOne(
     { trainerId: id },
     {
-      from: "services",
-      localField: "services",
-      foreignField: "serviceId",
-      as: "populatedServices"
+      from: "programs",
+      localField: "programs",
+      foreignField: "programId",
+      as: "populatedPrograms"
     }
   );
 }
@@ -126,8 +123,8 @@ async findAccepted(
   if (filter.gender) {
     matchQuery.gender = filter.gender;
   }
-  if (filter.serviceId) {
-    matchQuery.services = filter.serviceId; 
+  if (filter.programId) {
+    matchQuery.programs = filter.programId; 
   }
 
   const sortMap = {
@@ -149,18 +146,18 @@ async findAccepted(
           { $limit: limit },
           {
             $lookup: {
-              from: "services",
-              localField: "services",
-              foreignField: "serviceId",
-              as: "populatedServices"
+              from: "programs",
+              localField: "programs",
+              foreignField: "programId",
+              as: "populatedPrograms"
             }
           },
           {
             $addFields: {
-              services: "$populatedServices"
+              programs: "$populatedPrograms"
             }
           },
-          { $project: { populatedServices: 0 } }
+          { $project: { populatedPrograms: 0 } }
         ]
       }
     }
@@ -199,18 +196,18 @@ async findPending(
           { $limit: limit },
           {
             $lookup: {
-              from: "services",        
-              localField: "services", 
-              foreignField: "serviceId", 
-              as: "servicesData"         
+              from: "programs",        
+              localField: "programs", 
+              foreignField: "programId", 
+              as: "programsData"         
             }
           },
           {
             $addFields: {
-              services: "$servicesData"
+              programs: "$programsData"
             }
           },
-          { $project: { servicesData: 0 } }
+          { $project: { programsData: 0 } }
         ]
       }
     }
@@ -233,8 +230,7 @@ async countActiveTrainers():Promise<number>{
   return res
 }
 
-async updateTrainerProfilePicture(trainerId: string, profilePic: string): Promise<TrainerEntity|null> {
-  let doc=await this.model.findOneAndUpdate({trainerId},{profilePic})
-  return doc?this.toEntity(doc):null
+async updateTrainerProfilePicture(trainerId: string, profilePic: string): Promise<void> {
+  await this.model.findOneAndUpdate({trainerId},{profilePic})
 }
 }

@@ -4,12 +4,14 @@ import { UserEntity } from "./UserEntity";
 import { AppError } from "domain/errors/AppError";
 import { HttpStatus } from "utils/HttpStatus";
 import { ERROR_MESSAGES } from "utils/ErrorMessage";
+import { ProgramEntity } from "./ProgramEntity";
 export class BookingEntity {
+  private MAX_RESCHEDULE_LIMIT=2
   constructor(
     public readonly bookingId: string,
-    public readonly user: UserEntity,
-    public readonly trainer: TrainerEntity,
-    public readonly service: string,
+    public readonly user: (UserEntity|string),
+    public readonly trainer: (TrainerEntity|string),
+    public readonly program:string,
 
     public readonly date: Date,
     public readonly timeSlot: string,
@@ -34,6 +36,20 @@ export class BookingEntity {
     public rejectReason?:string
   ) {}
 
+  public get trainerId(): string {
+    if (typeof this.trainer === 'string') {
+      return this.trainer;
+    }
+    return this.trainer.trainerId;
+  }
+
+  public get userId(): string {
+  if (typeof this.user === 'string') {
+    return this.user;
+  }
+  return this.user.userId;
+}
+
   public canBeConfirmed(): boolean {
     return this.status === BOOKING_STATUS.PENDING;
   }
@@ -51,28 +67,59 @@ export class BookingEntity {
     const hoursDifference = (sessionTime.getTime() - now.getTime()) / (1000 * 60 * 60);
     return hoursDifference >= MIN_CANCEL_HOURS;
 }
+public requestReschedule(newDate: Date, newTimeSlot: string): void {
+  const now = new Date();
+  const sessionDate = new Date(this.date);
+  
+  if (this.status !== BOOKING_STATUS.CONFIRMED) {
+    throw new AppError(
+      `Cannot reschedule a booking that is currently ${this.status.toLowerCase()}.`, 
+      HttpStatus.BAD_REQUEST
+    );
+  }
 
-public canReschedule(): boolean {
-  return this.status === BOOKING_STATUS.CONFIRMED;
+  if ((this.rescheduleCount || 0) >= this.MAX_RESCHEDULE_LIMIT) {
+    throw new AppError(
+      "Maximum reschedule limit (2) has been reached for this booking.", 
+      HttpStatus.BAD_REQUEST
+    );
+  }
+
+  const hoursUntilSession = (sessionDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursUntilSession < 24) {
+    throw new AppError(
+      "Rescheduling is only allowed at least 24 hours before the session starts.", 
+      HttpStatus.BAD_REQUEST
+    );
+  }
+
+  (this as any).status = BOOKING_STATUS.RESCHEDULE_REQUESTED;
+  (this as any).rescheduleRequest = {
+    newDate,
+    newTimeSlot,
+    createdAt: new Date()
+  };
 }
 
 public approveReschedule(): void {
-    if (!this.rescheduleRequest) {
-      throw new AppError(ERROR_MESSAGES.PENDING_REQUEST_NOT_FOUND, HttpStatus.BAD_REQUEST);
-    }
-    
-
+  if(!this.rescheduleRequest){
+    throw new AppError('Reschedule canot find',HttpStatus.BAD_REQUEST)
+  }
     (this as any).date = this.rescheduleRequest.newDate;
     (this as any).timeSlot = this.rescheduleRequest.newTimeSlot;
     (this as any).status = BOOKING_STATUS.CONFIRMED;
-    (this as any).rescheduleCount = (this.rescheduleCount || 0) + 1;
     (this as any).rescheduleRequest = undefined;
   }
 
-  public rejectReschedule(): void {
-    (this as any).status = BOOKING_STATUS.CONFIRMED;
-    (this as any).rescheduleRequest = undefined; 
-  }
+  public rejectReschedule(reason: string): void {
+
+  (this as any).status = BOOKING_STATUS.CONFIRMED;
+
+  this.rejectReason = reason;
+
+  (this as any).rescheduleRequest = undefined;
+}
 
  
 public decline(reason: string): void {

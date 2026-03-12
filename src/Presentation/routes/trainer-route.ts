@@ -19,6 +19,7 @@ router.get('/profile',
 );
 router.put('/profile', 
     authorizeRoles(UserRole.TRAINER), 
+    upload.none(),
     trainerController.updateOwnProfile
 );
 router.patch('/profile/avatar', 

@@ -21,17 +21,20 @@ export class BookingRepoImpl
 
 
 
-  async createBooking(payload: BookingEntity): Promise<void> {
+async createBooking(payload: BookingEntity): Promise<BookingEntity> {
+  const bookingData = {
+    ...payload
+  };
 
-    const bookingData = {
-      ...payload,
-      user: typeof payload.user === 'string' ? payload.user : payload.user.userId,
-      trainer: typeof payload.trainer === 'string' ? payload.trainer : payload.trainer.trainerId,
-    };
+  const createdDoc = await this.model.create(bookingData);
+  const fullBooking = await this.findBookingById(createdDoc.bookingId);
 
-    await this.model.create(bookingData);
+  if (!fullBooking) {
+    throw new Error("Failed to retrieve booking after creation.");
   }
 
+  return fullBooking;
+}
   async findBookings(
     searchQuery: string = "",
     filters: Record<string, any> = {},
@@ -69,7 +72,7 @@ export class BookingRepoImpl
           $or: [
             { "trainerInfo.name": { $regex: searchQuery, $options: "i" } },
             { "userInfo.name": { $regex: searchQuery, $options: "i" } },
-            { service: { $regex: searchQuery, $options: "i" } },
+            { program: { $regex: searchQuery, $options: "i" } },
             { status: { $regex: searchQuery, $options: "i" } }
           ]
         }
@@ -98,8 +101,7 @@ export class BookingRepoImpl
       }
     );
 
-    const docs = await this.model.aggregate(pipeline);
-    console.log(docs)
+    const docs = await this.model.aggregate(pipeline)
     const data = docs.map(d => this.toEntity(d));
 
     return {
@@ -157,33 +159,25 @@ async findBookingById(id: string): Promise<BookingEntity | null> {
   ]);
 
   if (!result || result.length === 0) return null;
-
   return this.toEntity(result[0]);
 }
-  async updateBooking(bookingId: string, entity: BookingEntity): Promise<void> {
-    const updateData: any = {
-      ...entity,
-      user: typeof entity.user === "string" ? entity.user : entity.user.userId,
-      trainer: typeof entity.trainer === "string" ? entity.trainer : entity.trainer.trainerId,
-    };
-
-    const query: any = { $set: updateData };
-
-    if (entity.rescheduleRequest === undefined) {
-      query.$unset = { rescheduleRequest: 1 };
-      delete query.$set.rescheduleRequest;
-    }
-
-    await this.model.findOneAndUpdate({ bookingId }, query);
-  }
+async updateBooking(id: string, booking: BookingEntity): Promise<void> {
+  const persistenceData = BookingMapper.toPersistence(booking);
+  
+  await this.model.findOneAndUpdate(
+    { bookingId: id },
+    { $set: persistenceData },
+    { new: true }
+  );
+}
 
 
-  async hasActiveBookingsForService(serviceId: string): Promise<boolean> {
-    const activeStatuses = ["pending", "confirmed"];
+  async hasActiveBookingsForProgram(programId: string): Promise<boolean> {
+    
 
     const booking = await this.model.exists({
-      service: serviceId,
-      status: { $in: activeStatuses }
+      program: programId,
+      status: { $in: [BOOKING_STATUS.PENDING,BOOKING_STATUS.CONFIRMED] }
     });
 
     return !!booking;
@@ -318,6 +312,7 @@ async getPendingActions(trainerId: string): Promise<BookingEntity[]> {
       }
     },
     { $unwind: { path: "$userInfo", preserveNullAndEmptyArrays: true } },
+
     {
       $addFields: {
         user: "$userInfo",
@@ -330,7 +325,8 @@ async getPendingActions(trainerId: string): Promise<BookingEntity[]> {
     {
       $project: {
         userInfo: 0,
-        trainerInfo: 0
+        trainerInfo: 0,
+        populatedPrograms:0
       }
     }
   ]);
@@ -371,10 +367,11 @@ async getUpcomingAppointmentsByDate(trainerId: string, date: Date): Promise<Book
       }
     },
     { $unwind:  "$userInfo" },
+
     {
       $addFields: {
         user: "$userInfo",
-        trainer: "$trainerInfo",
+        trainer: "$trainerInfo"
       }
     },
     {
@@ -383,7 +380,8 @@ async getUpcomingAppointmentsByDate(trainerId: string, date: Date): Promise<Book
     {
       $project: {
         userInfo: 0,
-        trainerInfo: 0
+        trainerInfo: 0,
+        populatedPrograms:0
       }
     }
   ]);

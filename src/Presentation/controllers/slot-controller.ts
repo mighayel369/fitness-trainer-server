@@ -20,7 +20,7 @@ export class SlotController {
 
   ) {}
 
-  getOwnSlots = async (req: Request, res: Response, next: NextFunction) => {
+  getTrainerSchedule = async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { id } = req.user as { id: string };
     
@@ -41,7 +41,7 @@ export class SlotController {
       }
   };
 
-  updateWeeklyAvailability = async (req: Request, res: Response, next: NextFunction) => {
+  syncWeeklyAvailability = async (req: Request, res: Response, next: NextFunction) => {
      try {
        const { id } = req.user as { id: string };
        const { weeklyAvailability } = req.body;
@@ -65,7 +65,7 @@ export class SlotController {
   };
 
 
-  fetchAvailableSlotsForUser = async (req: Request, res: Response, next: NextFunction) => {
+  fetchAvailableSlotsForBooking = async (req: Request, res: Response, next: NextFunction) => {
       try {
         const { trainerId, date } = req.body;
     

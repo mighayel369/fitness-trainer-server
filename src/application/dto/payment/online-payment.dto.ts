@@ -1,6 +1,6 @@
 export interface CreateOnlinePaymentRequestDTO {
   trainerId: string;
-  serviceId: string;
+  programId: string;
   date: string;
   time: string;
   amount: number;
@@ -19,7 +19,7 @@ export interface VerifyPaymentRequestDTO {
   razorpay_signature: string;
   bookingDetails: {
     trainerId: string;
-    service: string;
+    program: string;
     date: string;
     time: string;
     price: number;

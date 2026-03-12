@@ -4,28 +4,26 @@ import { SlotController } from "Presentation/controllers/slot-controller";
 import { authorizeRoles } from "Presentation/middleware/authMiddleware";
 import { UserRole } from "utils/Constants";
 
-
 const router = express.Router();
 const slotController = container.resolve(SlotController);
 
-
 router.get(
-  '/my-slots', 
+  '/schedule', 
   authorizeRoles(UserRole.TRAINER), 
-  slotController.getOwnSlots
+  slotController.getTrainerSchedule
 );
 
 router.put(
-  '/weekly-availability', 
+  '/weekly-template', 
   authorizeRoles(UserRole.TRAINER), 
-  slotController.updateWeeklyAvailability
+  slotController.syncWeeklyAvailability
 );
 
 
 router.post(
-  '/available-slots', 
+  '/browse-availability', 
   authorizeRoles(UserRole.USER), 
-  slotController.fetchAvailableSlotsForUser
+  slotController.fetchAvailableSlotsForBooking
 );
 
-export default router
+export default router;

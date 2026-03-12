@@ -5,7 +5,7 @@ export interface BookingResponseDTO{
     trainerName:string,
     bookedDate:string,
     bookedTime:string,
-    bookedService:string,
+    bookedProgram:string,
     sessionAmount:number,
     bookingStatus:string
 }
@@ -20,7 +20,7 @@ export interface TrainserBookingResponseDTO{
   bookingId: string;
   clientName: string;
   clientEmail: string;
-  bookedService: string;
+  bookedProgram: string;
   bookedDate: string;
   bookedTime: string;
   sessionAmount: number;

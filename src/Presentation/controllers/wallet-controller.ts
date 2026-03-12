@@ -30,7 +30,7 @@ export class WalletController{
           res.status(HttpStatus.OK).json({
             success: true,
             message: SUCCESS_MESSAGES.WALLET.WALLET_DETAILS_FETCHED,
-            ...result
+            wallet:result
           });
         } catch (err) {
           next(err);

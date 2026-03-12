@@ -6,7 +6,7 @@ import { UpdateTrainerProfileRequestDTO } from "application/dto/trainer/update-t
 import { TrainerEntity } from "domain/entities/TrainerEntity";
 import { ERROR_MESSAGES } from "utils/ErrorMessage";
 import { ITrainerRepo } from "domain/repositories/ITrainerRepo";
-import { ServiceEntity } from "domain/entities/ServiceEntity";
+import { ProgramEntity } from "domain/entities/ProgramEntity";
 @injectable()
 export class UpdateTrainerProfileUseCase implements IUpdateTrainerProfileUseCase {
   constructor(
@@ -20,10 +20,8 @@ console.log(data)
     if (!existing) {
       throw new AppError(ERROR_MESSAGES.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
-   const mappedServices: ServiceEntity[] = data.services 
-      ? data.services.map(id => ({ serviceId: id } as ServiceEntity))
-      : existing.services;
-    const updatedEntity = new TrainerEntity(
+
+    const updatedTrainer = new TrainerEntity(
       trainerId,
       data.name || existing.name,
       existing.email,
@@ -33,7 +31,7 @@ console.log(data)
       existing.password,
       data.languages ?? existing.languages,
       data.experience ?? existing.experience,
-      mappedServices,
+      data.programs,
       existing.certificate,
       data.gender ?? existing.gender,
       existing.rating,
@@ -46,10 +44,10 @@ console.log(data)
       existing.profilePic
     );
 
-    if (updatedEntity.isBlocked()) {
+    if (updatedTrainer.isBlocked()) {
       throw new AppError(ERROR_MESSAGES.ACCOUNT_BLOCKED, HttpStatus.FORBIDDEN);
     }
 
-    await this._trainerRepo.updateTrainer(trainerId, updatedEntity);
+    await this._trainerRepo.updateTrainer(trainerId, updatedTrainer);
   }
 }

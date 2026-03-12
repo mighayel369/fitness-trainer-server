@@ -10,7 +10,7 @@ export interface upcomingAppointmentsDTO{
     bookingId:string,
     clientName:string,
     timeSlot:string,
-    service:string,
+    program:string,
     status:string,
     profilePic:string
 }

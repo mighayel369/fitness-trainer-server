@@ -1,3 +1,4 @@
+import { BOOKING_STATUS } from "utils/Constants";
 
 export interface TrainerBookingDetailsResponseDTO {
     bookingId: string;
@@ -6,7 +7,7 @@ export interface TrainerBookingDetailsResponseDTO {
     clientPhone?: string;
     clientProfilePic?: string;
     
-    bookedService: string;
+    bookedProgram: string;
     bookedDate: Date;
     bookedTime: string;
     sessionDuration: number;
@@ -29,11 +30,11 @@ export interface TrainerBookingDetailsResponseDTO {
 export interface UserBookingDetailsResponseDTO {
   bookingId: string;    
   
-  bookedService: string;
+  bookedProgram: string;
   bookedDate: string;      
   bookedTime: string;    
   sessionDuration: number;
-  bookingStatus: 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'reschedule_requested';
+  bookingStatus: BOOKING_STATUS
 
   trainerId: string;   
   trainerName: string;

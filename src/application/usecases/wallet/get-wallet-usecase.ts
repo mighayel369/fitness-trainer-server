@@ -27,15 +27,17 @@ export class GetWalletUseCase implements IGetWalletUseCase {
       return {
         balance:0,
         data: [],
+        activeHoldCount:0,
         total: 0
       };
     }
 
 
-
+console.log(result)
     return {
       balance:result.wallet.balance,
-      data: result.wallet.transactions.map(t=>WalletMapper.toTransactionDTO(t)), 
+      data: result.wallet.transactions.map(t=>WalletMapper.toTransactionDTO(t)),
+      activeHoldCount:result.wallet.holds.length, 
       total: Math.ceil(result.totalTransactions/limit)
     };
   }

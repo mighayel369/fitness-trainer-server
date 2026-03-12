@@ -20,7 +20,7 @@ import { VerifyAccountRequestDTO } from "application/dto/public/verify-account.d
 import { IReSendOtpUseCase } from "application/interfaces/public/i-resend-otp.usecase";
 import { IRefreshAccessTokenUseCase } from "application/interfaces/public/i-refresh-access-token.usecase";
 import { IVerifySession } from 'application/interfaces/auth/i-verify-session.usecase';
-import { VerifySessionResponseDTO } from 'application/dto/auth/verify-session.dto';
+import { ClientSessionDTO, TrainerSessionDTO } from 'application/dto/auth/verify-session.dto';
 @injectable()
 export class AuthController {
   constructor(
@@ -37,12 +37,13 @@ export class AuthController {
     @inject("VerifyUserAccountUseCase") private _verifyUserAccountUsecase: IVerifyAccountUseCase,
     @inject("VerifyTrainerAccountUseCase") private _verifyTrainerAccountUsecase: IVerifyAccountUseCase,
     @inject("IReSendOtpUseCase") private _resendOtpUseCase: IReSendOtpUseCase,
-    @inject("IVerifySession") private _getIdentityUseCase: IVerifySession,
+    @inject("VerifyClientSession") private _getClientIdentityUseCase: IVerifySession<ClientSessionDTO>,
+    @inject("VerifyTrainerSession") private _getTrainerIdentityUseCase: IVerifySession<TrainerSessionDTO>,
   ) { }
 
   AdminLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const input:LoginRequestDTO = req.body;
+      const input:LoginRequestDTO = req.body
 
       const result:LoginResponseDTO = await this._adminLoginUseCase.execute(input);
 
@@ -65,8 +66,8 @@ export class AuthController {
 
   UserLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.body)
-    const input: LoginRequestDTO = req.body;
+    
+    const input: LoginRequestDTO = req.body
     
     const result: LoginResponseDTO = await this._userLoginUsecase.execute(input);
 
@@ -88,6 +89,7 @@ export class AuthController {
 
 TrainerLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body)
     const input: LoginRequestDTO = req.body;
     
     const result: LoginResponseDTO = await this._trainerLoginUsecase.execute(input);
@@ -128,10 +130,10 @@ console.log(result)
 RegisterTrainer = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, password, gender, experience, pricePerSession } = req.body;
-
-    const services = Array.isArray(req.body.services) 
-      ? req.body.services 
-      : req.body["services[]"] ? [].concat(req.body["services[]"]) : [];
+    console.log(req.body)
+    const programs = Array.isArray(req.body.programs) 
+      ? req.body.programs 
+      : req.body["programs[]"] ? [].concat(req.body["programs[]"]) : [];
 
     const languages = Array.isArray(req.body.languages) 
       ? req.body.languages 
@@ -146,9 +148,9 @@ RegisterTrainer = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
       gender,
-      experience,
-      pricePerSession,
-      services,
+      experience:Number(experience),
+      pricePerSession:Number(pricePerSession),
+      programs,
       languages
     };
 
@@ -179,7 +181,7 @@ ReApplyTrainer = async (req: Request, res: Response, next: NextFunction) => {
       experience: Number(req.body.experience),
       pricePerSession: Number(req.body.pricePerSession),
       languages: parseArray('languages'),
-      services: parseArray('services'),
+      programs: parseArray('programs'),
       certificate: req.file as Express.Multer.File,
     };
 
@@ -320,15 +322,27 @@ ResendOtp = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-verifySession = async (req: Request, res: Response, next: NextFunction) => {
+verifyClientSession = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.user as { id: string };
-    const user:VerifySessionResponseDTO = await this._getIdentityUseCase.execute(id); 
+    const user:ClientSessionDTO = await this._getClientIdentityUseCase.execute(id); 
     
     res.status(HttpStatus.OK).json({
         success: true,
         user
     });
 };
+
+
+verifyTrainerSession = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.user as { id: string };
+    const trainer:TrainerSessionDTO = await this._getTrainerIdentityUseCase.execute(id); 
+    
+    res.status(HttpStatus.OK).json({
+        success: true,
+        trainer
+    });
+};
+
 
   Logot=async(req:Request,res:Response)=>{
     try{

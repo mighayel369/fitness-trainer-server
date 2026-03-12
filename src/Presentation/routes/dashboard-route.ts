@@ -10,21 +10,19 @@ const dashboardController = container.resolve(DashboardController);
 router.get(
     "/admin",
     authorizeRoles(UserRole.ADMIN),
-    dashboardController.fetchAdminDashboardData
+    dashboardController.getAdminPlatformInsights
 );
 
-
 router.get(
-    "/trainer",
+    "/trainer/metrics",
     authorizeRoles(UserRole.TRAINER),
-    dashboardController.getTrainerDashboardData
+    dashboardController.getTrainerPerformanceMetrics
 );
 
-
 router.get(
-    "/trainer/appointments",
+    "/trainer/agenda",
     authorizeRoles(UserRole.TRAINER),
-    dashboardController.getTrainerDashboardAppointmentData
+    dashboardController.getTrainerDailyAgenda
 );
 
 export default router;

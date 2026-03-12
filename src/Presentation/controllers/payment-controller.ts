@@ -20,7 +20,7 @@ export class PaymentController{
       try {
         const input: CreateOnlinePaymentRequestDTO = {
           trainerId: req.body.trainerId,
-          serviceId: req.body.serviceId,
+          programId: req.body.programId,
           date: req.body.date,
           time: req.body.time,
           amount: req.body.amount

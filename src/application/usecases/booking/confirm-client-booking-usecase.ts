@@ -29,10 +29,17 @@ export class ConfirmBookingUseCase implements IConfirmBookingUseCase {
       );
     }
 
+    const trainerId = booking.trainerId; 
+    
+    if (!trainerId) {
+      throw new AppError('Trainer information is missing from booking', HttpStatus.BAD_REQUEST);
+    }
+
     await this._bookingRepo.updateBookingStatus(bookingId, BOOKING_STATUS.CONFIRMED);
     
-  
-    await this._walletRepo.convertHoldToBalance(booking.trainer.trainerId, bookingId);
+
+    await this._walletRepo.convertHoldToBalance(trainerId, bookingId);
+
     await this._walletRepo.convertHoldToBalance(config.ADMIN_WALLET, bookingId);
   }
 }

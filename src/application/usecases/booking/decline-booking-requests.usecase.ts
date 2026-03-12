@@ -17,23 +17,30 @@ export class DeclineBookingUseCase implements IDeclineBookingUseCase {
   ) {}
 
   async execute(bookingId: string, reason: string): Promise<void> {
+  
     const booking = await this._bookingRepo.findBookingById(bookingId);
 
     if (!booking) {
       throw new AppError(ERROR_MESSAGES.BOOKING_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    await this._walletRepo.releaseHoldWithoutBalance(booking.trainer.trainerId, bookingId);
+
+    if (!booking.canBeDeclined()) {
+        throw new AppError(ERROR_MESSAGES.DECLINE_BOOKING_ERROR, HttpStatus.BAD_REQUEST);
+    }
+
+    await this._walletRepo.releaseHoldWithoutBalance(booking.trainerId, bookingId);
     await this._walletRepo.releaseHoldWithoutBalance(config.ADMIN_WALLET, bookingId);
 
     await this._walletRepo.credit(
-      booking.user.userId,
+      booking.userId,
       booking.totalAmount,
       "refund",
       bookingId
     );
 
     booking.decline(reason);
+
     await this._bookingRepo.updateBooking(bookingId, booking);
   }
 }
